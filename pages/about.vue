@@ -15,9 +15,9 @@
                     </h3>
                     <p>
                         Questa applicazione è un esercizio sull'utilizzo del
-                        framwork
+                        framework
                         <a
-                            href="https://openweathermap.org/"
+                            href="https://nuxtjs.org/"
                             target="_blank"
                             rel="noopener noreferrer"
                             >Nuxt.js
@@ -56,14 +56,8 @@
                         <li>10156,it (corrisponde a Torino)</li>
                         <li>10156 (corrisponde a New York)</li>
                     </ul>
-                    <br />
-                    <p>
-                        NOTA: alcuni dati visualizzati in pagina sono calcolati
-                        o rilevati altri sono previsioni. Ad esempio le
-                        temperature max e min sono previste, quindi potrebbero
-                        differire da quelle effettivamente rilevate.
-                    </p>
 
+                    <hr class="my-3" />
                     <p>
                         Dati meteo e previsioni forniti da
                         <a
@@ -77,22 +71,6 @@
                             />
                         </a>
                     </p>
-                    <hr class="my-3" />
-                    <a
-                        href="https://nuxtjs.org/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Nuxt Documentation
-                    </a>
-                    <br />
-                    <a
-                        href="https://github.com/nuxt/nuxt.js"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Nuxt GitHub
-                    </a>
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />

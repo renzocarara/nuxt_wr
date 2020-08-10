@@ -36,12 +36,12 @@
                     <v-card-text>
                         <v-row align="center">
                             <v-col class="text-right" cols="6">
-                                <span class="text-subtitle-2 blue--text"
+                                <!-- <span class="text-subtitle-2 blue--text"
                                     >{{ tempMin }}&nbsp;
                                 </span>
                                 <span class="text-subtitle-2 red--text">
                                     {{ tempMax }}</span
-                                ><br />
+                                ><br /> -->
                                 <span class="display-1">{{ temp }}&deg;C</span
                                 ><br />
                                 <span class="text-subtitle-2 grey--text"
@@ -80,10 +80,10 @@
                                 {{ pressure }}hPa</v-list-item-subtitle
                             >
 
-                            <v-list-item-subtitle
+                            <!-- <v-list-item-subtitle
                                 ><v-icon>mdi-sunglasses</v-icon>&nbsp;indice UV
                                 {{ uvi }}
-                            </v-list-item-subtitle>
+                            </v-list-item-subtitle> -->
 
                             <v-list-item-subtitle
                                 ><v-icon>mdi-weather-sunset-up</v-icon>&nbsp;il
@@ -173,8 +173,8 @@ export default {
             pressure: 'n.d.',
             windSpeed: 'n.d.',
             windDeg: 'n.d.',
-            tempMin: 'n.d.',
-            tempMax: 'n.d.',
+            // tempMin: 'n.d.',
+            // tempMax: 'n.d.',
             sunrise: 'n.d.',
             sunset: 'n.d.',
             uvi: 'n.d.',
@@ -250,7 +250,8 @@ export default {
                         IT +
                         '&units=' +
                         METRIC +
-                        '&exclude=minutely,hourly';
+                        // '&exclude=minutely,hourly';
+                        '&exclude=minutely';
 
                     return axios.get(BASE_URL + EP_ONECALL + oneCallParams);
                 })
