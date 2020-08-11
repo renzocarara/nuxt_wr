@@ -224,9 +224,12 @@ export default {
                     // la prima API call è ok, estraggo i dati dalla response
                     this.extractWeatherData(response.data);
 
+                    // creare una function di reset
+
                     this.place = ''; // resetto la Search bar
                     this.hint = 'es. "roma,it" (lo stato è opzionale)'; // ripristino hint
                     this.resultsAvailable = true;
+                    this.forecast = [];
 
                     // preparo i parametri per la 2a API call
                     // località ricercata + api key + lingua + unità di misura + esclusioni
