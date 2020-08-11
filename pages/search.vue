@@ -1,10 +1,10 @@
 <template>
     <v-layout>
         <v-flex class="text-center">
-            <v-card class="mx-auto" max-width="400">
+            <v-card class="mx-auto" max-width="400" color="cyan lighten-5">
                 <v-text-field
                     v-model="place"
-                    class="d-inline-block px-0 py-10"
+                    class="px-10 py-10"
                     placeholder="Inserisci una località..."
                     clearable
                     persistent-hint
@@ -15,6 +15,7 @@
                     @click:append="handleSearch"
                     @keypress.13="handleSearch"
                 ></v-text-field>
+
                 <div v-if="resultsAvailable">
                     <v-list-item three-line>
                         <v-list-item-content>
@@ -36,12 +37,6 @@
                     <v-card-text>
                         <v-row align="center">
                             <v-col class="text-right" cols="6">
-                                <!-- <span class="text-subtitle-2 blue--text"
-                                    >{{ tempMin }}&nbsp;
-                                </span>
-                                <span class="text-subtitle-2 red--text">
-                                    {{ tempMax }}</span
-                                ><br /> -->
                                 <span class="display-1">{{ temp }}&deg;C</span
                                 ><br />
                                 <span class="text-subtitle-2 grey--text"
@@ -51,8 +46,8 @@
                             <v-col cols="6" class="">
                                 <v-img
                                     class=""
-                                    src="https://cdn.vuetifyjs.com/images/cards/sun.png"
-                                    alt="Sunny image"
+                                    :src="icon"
+                                    alt="weather icon"
                                     width="92"
                                 ></v-img>
                             </v-col>
@@ -99,35 +94,46 @@
                         </v-list-item-content>
                     </v-list-item>
 
-                    <!-- <v-slider
-                        v-model="time"
+                    <h3 class="mt-5">Previsioni</h3>
+
+                    <v-list class="transparent">
+                        <v-list-item
+                            v-for="item in forecast"
+                            :key="item.weekday"
+                            class="forecast-list"
+                        >
+                            <v-list-item-title>{{
+                                item.weekday
+                            }}</v-list-item-title>
+
+                            <v-list-item-avatar>
+                                <v-img
+                                    :src="item.icon"
+                                    alt="forecast icon"
+                                    width="46"
+                                ></v-img>
+                            </v-list-item-avatar>
+
+                            <v-list-item-subtitle class="">
+                                <span class="text-subtitle-2 blue--text"
+                                    >{{ item.tempMin }}&nbsp;&nbsp;
+                                </span>
+                                <span class="text-subtitle-2 red--text">
+                                    {{ item.tempMax }}</span
+                                >
+                            </v-list-item-subtitle>
+                        </v-list-item>
+                    </v-list>
+
+                    <h4 class="mt-5">Dettagli</h4>
+
+                    <v-slider
+                        v-model="dayTick"
                         :max="6"
                         :tick-labels="labels"
                         class="mx-4"
                         ticks
                     ></v-slider>
-
-                    <v-list class="transparent">
-                        <v-list-item v-for="item in forecast" :key="item.day">
-                            <v-list-item-title>{{
-                                item.day
-                            }}</v-list-item-title>
-
-                            <v-list-item-icon>
-                                <v-icon>{{ item.icon }}</v-icon>
-                            </v-list-item-icon>
-
-                            <v-list-item-subtitle class="text-right">
-                                {{ item.temp }}
-                            </v-list-item-subtitle>
-                        </v-list-item>
-                    </v-list>
-
-                    <v-divider></v-divider>
-
-                    <v-card-actions>
-                        <v-btn text>Full Report</v-btn>
-                    </v-card-actions> -->
                 </div>
             </v-card>
         </v-flex>
@@ -167,6 +173,7 @@ export default {
             country: '-',
             dt: '-',
             description: '-',
+            icon: '@/assets/images/icons/00@2x.png',
             temp: 'n.d.',
             feelsLike: 'n.d',
             humidity: 'n.d.',
@@ -180,25 +187,9 @@ export default {
             uvi: 'n.d.',
 
             // previsioni
+            forecast: [],
             labels: ['SU', 'MO', 'TU', 'WED', 'TH', 'FR', 'SA'],
-            time: 0,
-            forecast: [
-                {
-                    day: 'Tuesday',
-                    icon: 'mdi-white-balance-sunny',
-                    temp: '24\xB0/12\xB0',
-                },
-                {
-                    day: 'Wednesday',
-                    icon: 'mdi-white-balance-sunny',
-                    temp: '22\xB0/14\xB0',
-                },
-                {
-                    day: 'Thursday',
-                    icon: 'mdi-cloud',
-                    temp: '25\xB0/15\xB0',
-                },
-            ],
+            dayTick: 0,
         };
     },
     methods: {
@@ -207,7 +198,7 @@ export default {
             // vengono effettuate 2 chiamate API usando axios in sequenza, la 2a dipende da alcuni dati (lat e lon)
             //  recuperati dalla 1a. Se la 1a chiamata fallisce, le seconda non viene effettuata.
             // La 1a chiamata recupera i dari correnti della località selezionata (temperatura, vento, pressione,...)
-            // La seconda serve per recuperare sostanzialmente le previsioni (più altri dati es. UVI),
+            // La seconda serve per recuperare sostanzialmente le previsioni,
             // se questa seconda chiamata non dà esito positivo, i dati recuperati con la 1a chiamata
             // vengono comunque visualizzati.
 
@@ -231,7 +222,7 @@ export default {
                     console.log('response:', response);
 
                     // la prima API call è ok, estraggo i dati dalla response
-                    this.extractWeatherData(response);
+                    this.extractWeatherData(response.data);
 
                     this.place = ''; // resetto la Search bar
                     this.hint = 'es. "roma,it" (lo stato è opzionale)'; // ripristino hint
@@ -250,8 +241,7 @@ export default {
                         IT +
                         '&units=' +
                         METRIC +
-                        // '&exclude=minutely,hourly';
-                        '&exclude=minutely';
+                        '&exclude=minutely,hourly';
 
                     return axios.get(BASE_URL + EP_ONECALL + oneCallParams);
                 })
@@ -260,32 +250,37 @@ export default {
                     console.log('SUCCESS 2nd axios call');
                     this.loading = false; // disattivo la progress bar
                     // ho tutti i dati da visualizzare in oneCallResponse
-                    this.handleSuccess(oneCallResponse);
+                    this.extractOnecallData(oneCallResponse.data);
                 })
                 .catch((error) => {
                     this.loading = false; // disattivo la progress bar
+                    console.log('ERRORE ramo catch di axios');
                     this.handleError(error);
                 });
         },
 
-        extractWeatherData(response) {
+        extractWeatherData(data) {
             // DESCRIZIONE:
             // valorizza le variabili locali in data() con i dati ricevuti dalle API
 
-            this.lat = response.data.coord.lat;
-            this.lon = response.data.coord.lon;
-            this.city = response.data.name;
-            this.country = response.data.sys.country;
-            this.temp = response.data.main.temp.toFixed(1);
-            this.description = response.data.weather[0].description;
-            this.feelsLike = response.data.main.feels_like.toFixed(1);
-            this.pressure = response.data.main.pressure;
-            this.humidity = response.data.main.humidity;
+            this.lat = data.coord.lat;
+            this.lon = data.coord.lon;
+            this.city = data.name;
+            this.country = data.sys.country;
+            this.temp = data.main.temp.toFixed(1);
+            this.description = data.weather[0].description;
+            this.icon =
+                'http://openweathermap.org/img/wn/' +
+                data.weather[0].icon +
+                '@2x.png';
+            this.feelsLike = data.main.feels_like.toFixed(1);
+            this.pressure = data.main.pressure;
+            this.humidity = data.main.humidity;
 
-            const date = new Date(response.data.dt * 1000).toUTCString(); // UTC time
+            const date = new Date(data.dt * 1000).toUTCString(); // UTC time
             // console.log('date UTC/GMT:', date);
-            // console.log('timezone:', response.data.timezone);
-            const offsetZone = response.data.timezone; // timezone offset in secondi
+            // console.log('timezone:', data.timezone);
+            const offsetZone = data.timezone; // timezone offset in secondi
             // console.log(
             //     'offset in ore rispetto IT :',
             //     (offsetZone - 7200) / 3600
@@ -295,32 +290,65 @@ export default {
                 .add(offsetZone, 's')
                 .format('dddd, D MMMM YYYY LT');
 
-            const sunrise = new Date(
-                response.data.sys.sunrise * 1000
-            ).toUTCString();
-            const sunset = new Date(
-                response.data.sys.sunset * 1000
-            ).toUTCString();
+            const sunrise = new Date(data.sys.sunrise * 1000).toUTCString();
+            const sunset = new Date(data.sys.sunset * 1000).toUTCString();
             this.sunrise = moment
                 .utc(sunrise)
                 .add(offsetZone, 's')
                 .format('LT');
             this.sunset = moment.utc(sunset).add(offsetZone, 's').format('LT');
 
-            this.windSpeed = response.data.wind.speed.toFixed(1);
-            this.windDeg = response.data.wind.deg.toFixed(0);
+            this.windSpeed = data.wind.speed.toFixed(1);
+            this.windDeg = data.wind.deg.toFixed(0);
         },
 
-        handleSuccess(response) {
+        extractOnecallData(data) {
             // DESCRIZIONE:
             // viene chiamata se la 2a chiamata API ha successo
+            // valorizza le variabili locali in data() con i dati ricevuti dalle API
 
-            this.uvi = response.data.current.uvi;
-            this.tempMin = response.data.daily[0].temp.min.toFixed(1);
-            this.tempMax = response.data.daily[0].temp.max.toFixed(1);
+            console.log('oneCallResponse:', data);
 
-            console.log('oneCallResponse:', response);
+            // this.uvi = data.current.uvi;
+
+            // previsioni
+            const forecastLength = data.daily.length;
+            const offsetZone = data.timezone_offset; // timezone offset in secondi
+
+            console.log('forcastLength:', forecastLength);
+            console.log('offsetZone:', offsetZone);
+
+            for (let i = 1; i <= data.daily.length - 1; i++) {
+                const forecastDate = new Date(
+                    data.daily[i].dt * 1000
+                ).toUTCString(); // UTC time
+                console.log('date UTC/GMT:', forecastDate);
+
+                console.log(
+                    'weekday moment:',
+                    moment.utc(forecastDate).add(offsetZone, 's').format('dddd')
+                );
+                const forecastObj = {
+                    weekday: moment
+                        .utc(forecastDate)
+                        .add(offsetZone, 's')
+                        .format('dddd'),
+                    icon:
+                        'http://openweathermap.org/img/wn/' +
+                        data.daily[i].weather[0].icon +
+                        '@2x.png',
+                    tempMin: data.daily[i].temp.min.toFixed(1),
+                    tempMax: data.daily[i].temp.max.toFixed(1),
+                };
+
+                // console.log('singola forecast:', forecastObj);
+
+                this.forecast.push(forecastObj);
+            }
+
+            // console.log('forecast array di oggetti:', this.forecast);
         },
+
         handleError(error) {
             // DESCRIZIONE:
             // gestisce i 2 casi a seconda che fallisca la 1a o la 2a chiamata API
@@ -329,6 +357,8 @@ export default {
 
             // console.log('error.config', error.config);
             // console.log('error.config.url', error.config.url);
+
+            console.log('handleError called!');
 
             if (error.config.url.includes('/weather?')) {
                 // località non trovata (weather endpoint)
@@ -341,3 +371,10 @@ export default {
     },
 };
 </script>
+
+<style lang="scss" scoped>
+.forecast-list {
+    height: 38px;
+    min-height: 38px;
+}
+</style>

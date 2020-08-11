@@ -1,4 +1,4 @@
-import colors from 'vuetify/es5/util/colors'
+import colors from 'vuetify/es5/util/colors';
 
 export default {
     /*
@@ -96,4 +96,4 @@ export default {
      ** See https://nuxtjs.org/api/configuration-build/
      */
     build: {},
-}
+};

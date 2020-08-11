@@ -1,7 +1,7 @@
 <template>
     <v-layout column justify-center align-center>
         <v-flex>
-            <v-card>
+            <v-card color="cyan lighten-5">
                 <nuxt-logo-animation />
                 <v-card-title class="headline">
                     <span class="text-secondary-color">N</span>uxt&nbsp;
@@ -13,6 +13,7 @@
                         <span><v-icon>mdi-information</v-icon></span>
                         Informazioni
                     </h3>
+                    <h5>SCOPO</h5>
                     <p>
                         Questa applicazione è un esercizio sull'utilizzo del
                         framework
@@ -23,6 +24,7 @@
                             >Nuxt.js
                         </a>
                     </p>
+                    <h5>FUNZIONAMENTO</h5>
                     <p>
                         Permette di ricercare informazioni meteo e previsioni su
                         più di 200000 località nel mondo. Sfrutta delle chiamate
@@ -34,10 +36,11 @@
                             >OpenWeatherMap</a
                         >.
                     </p>
+                    <h5>UTILIZZO</h5>
                     <p>
-                        UTILIZZO: è necessario inserire il nome di una località
-                        da ricercare. E' possibile opzionalmente specificare
-                        anche un codice del paese , alcuni esempi:
+                        E' necessario inserire il nome di una località da
+                        ricercare. E' possibile opzionalmente specificare anche
+                        un codice del paese , alcuni esempi:
                     </p>
                     <ul>
                         <li>roma,it</li>
@@ -56,25 +59,35 @@
                         <li>10156,it (corrisponde a Torino)</li>
                         <li>10156 (corrisponde a New York)</li>
                     </ul>
-
-                    <hr class="my-3" />
+                    <br />
+                    <h5>TECNOLOGIE</h5>
+                    <ul>
+                        <li>NUXT.JS</li>
+                        <li>VUE.JS</li>
+                        <li>VUETIFY</li>
+                        <li>AXIOS</li>
+                    </ul>
+                    <br />
+                    <h5>CREDITS</h5>
                     <p>
                         Dati meteo e previsioni forniti da
+                        <br />
                         <a
                             href="https://openweathermap.org/"
                             target="_blank"
                             rel="noopener noreferrer"
                             ><img
-                                class="logo-img"
+                                class="logo-badge"
                                 src="@/assets/images/owm_logo.png"
                                 alt="owm logo"
                             />
                         </a>
                     </p>
                 </v-card-text>
+                <hr class="my-3" />
                 <v-card-actions>
                     <v-spacer />
-                    <v-btn color="primary" nuxt to="/">
+                    <v-btn dark color="red accent-4" nuxt to="/">
                         Back Home
                     </v-btn>
                 </v-card-actions>
@@ -95,7 +108,7 @@ export default {
 
 <style lang="scss" scoped>
 //
-.logo-img {
+.logo-badge {
     width: 75px;
     height: 34px;
     vertical-align: text-bottom;

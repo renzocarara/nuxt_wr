@@ -1,5 +1,5 @@
 <template>
-    <v-app dark>
+    <v-app>
         <v-navigation-drawer
             v-model="drawer"
             :clipped="clipped"
@@ -25,23 +25,48 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
-        <v-app-bar :clipped-left="clipped" fixed dense app>
+        <v-app-bar
+            :clipped-left="clipped"
+            fixed
+            dense
+            dark
+            color="cyan lighten-3"
+            app
+        >
+            <nuxt-link class="" to="/">
+                <v-img
+                    class="mx-2"
+                    :src="require('../assets/images/nwr_logo.png')"
+                    max-height="35"
+                    max-width="35"
+                    contain
+                ></v-img>
+            </nuxt-link>
+
             <nuxt-link class="text-decoration-none text-secondary-color" to="/">
-                <v-toolbar-title class="" v-text="title" />
+                <strong><v-toolbar-title v-text="title" /></strong>
             </nuxt-link>
             <v-spacer />
 
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         </v-app-bar>
         <!-- quella che segue è il corpo della pagina, cioè quello che sta fra l'header e il footer -->
-        <v-main class="d-flex align-center">
+        <v-main class="d-flex align-center bgc-main">
             <v-container>
                 <nuxt />
             </v-container>
         </v-main>
         <!--  -->
-        <v-footer :absolute="!fixed" app>
-            <span>Renzo Carara - &copy; {{ new Date().getFullYear() }}</span>
+        <v-footer :absolute="!fixed" dark color="cyan lighten-3" app>
+            <span>
+                <a
+                    href="https://www.renzocarara.it/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                </a
+                >Renzo Carara - &copy; {{ new Date().getFullYear() }}</span
+            >
         </v-footer>
     </v-app>
 </template>
@@ -77,4 +102,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 //
+.bgc-main {
+    background-color: $cyan-lighten-4;
+}
 </style>
