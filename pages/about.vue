@@ -40,7 +40,7 @@
                     <p>
                         E' necessario inserire il nome di una località da
                         ricercare. E' possibile opzionalmente specificare anche
-                        un codice del paese , alcuni esempi:
+                        un codice della nazione , alcuni esempi:
                     </p>
                     <ul>
                         <li>roma,it</li>
@@ -51,8 +51,9 @@
                     <br />
                     <p>
                         E' possibile anche ricercare tramite codice postale, nel
-                        qual caso è nesessario specificare il codice di un paese
-                        (se non viene specificato il default è US) esempi:
+                        qual caso è nesessario specificare il codice della
+                        nazione (se non viene specificato il default è US)
+                        esempi:
                     </p>
                     <ul>
                         <li>20148,it (corrisponde a Milano)</li>

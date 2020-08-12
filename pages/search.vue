@@ -2,6 +2,7 @@
     <v-layout>
         <v-flex class="text-center">
             <v-card class="mx-auto" max-width="400" color="cyan lighten-5">
+                <!-- Search Bar -->
                 <v-text-field
                     v-model="place"
                     class="px-10 py-10"
@@ -16,7 +17,8 @@
                     @keypress.13="handleSearch"
                 ></v-text-field>
 
-                <div v-if="resultsAvailable">
+                <!-- lista che contiene tutti i dati da visualizzare in pagina -->
+                <div v-if="currentDataAvailable">
                     <v-list-item three-line>
                         <v-list-item-content>
                             <v-list-item-title class="headline">
@@ -40,7 +42,7 @@
                                 <span class="display-1">{{ temp }}&deg;C</span
                                 ><br />
                                 <span class="text-subtitle-2 grey--text"
-                                    >percepita {{ feelsLike }}</span
+                                    >percepita {{ feelsLike }}&deg;C</span
                                 >
                             </v-col>
                             <v-col cols="6" class="">
@@ -94,46 +96,48 @@
                         </v-list-item-content>
                     </v-list-item>
 
-                    <h3 class="mt-5">Previsioni</h3>
+                    <div v-if="forecastAvailable">
+                        <h3 class="mt-5">Previsioni</h3>
 
-                    <v-list class="transparent">
-                        <v-list-item
-                            v-for="item in forecast"
-                            :key="item.weekday"
-                            class="forecast-list"
-                        >
-                            <v-list-item-title>{{
-                                item.weekday
-                            }}</v-list-item-title>
+                        <v-list class="transparent">
+                            <v-list-item
+                                v-for="item in forecast"
+                                :key="item.weekday"
+                                class="forecast-list"
+                            >
+                                <v-list-item-title>{{
+                                    item.weekday
+                                }}</v-list-item-title>
 
-                            <v-list-item-avatar>
-                                <v-img
-                                    :src="item.icon"
-                                    alt="forecast icon"
-                                    width="46"
-                                ></v-img>
-                            </v-list-item-avatar>
+                                <v-list-item-avatar>
+                                    <v-img
+                                        :src="item.icon"
+                                        alt="forecast icon"
+                                        width="46"
+                                    ></v-img>
+                                </v-list-item-avatar>
 
-                            <v-list-item-subtitle class="">
-                                <span class="text-subtitle-2 blue--text"
-                                    >{{ item.tempMin }}&nbsp;&nbsp;
-                                </span>
-                                <span class="text-subtitle-2 red--text">
-                                    {{ item.tempMax }}</span
-                                >
-                            </v-list-item-subtitle>
-                        </v-list-item>
-                    </v-list>
+                                <v-list-item-subtitle class="">
+                                    <span class="text-subtitle-2 blue--text"
+                                        >{{ item.tempMin }}&nbsp;&nbsp;
+                                    </span>
+                                    <span class="text-subtitle-2 red--text">
+                                        {{ item.tempMax }}</span
+                                    >
+                                </v-list-item-subtitle>
+                            </v-list-item>
+                        </v-list>
 
-                    <h4 class="mt-5">Dettagli</h4>
+                        <h4 class="mt-5">Dettagli</h4>
 
-                    <v-slider
-                        v-model="dayTick"
-                        :max="6"
-                        :tick-labels="labels"
-                        class="mx-4"
-                        ticks
-                    ></v-slider>
+                        <v-slider
+                            v-model="dayTick"
+                            :max="6"
+                            :tick-labels="labels"
+                            class="mx-4"
+                            ticks
+                        ></v-slider>
+                    </div>
                 </div>
             </v-card>
         </v-flex>
@@ -163,8 +167,9 @@ export default {
             hint: 'es. "roma,it" (lo stato è opzionale)',
             loading: false,
 
-            // API calls a buon fine
-            resultsAvailable: false,
+            // esiti chiamate API
+            currentDataAvailable: false,
+            forecastAvailable: true,
 
             // meteo corrente
             lat: 'n.d.',
@@ -180,18 +185,17 @@ export default {
             pressure: 'n.d.',
             windSpeed: 'n.d.',
             windDeg: 'n.d.',
-            // tempMin: 'n.d.',
-            // tempMax: 'n.d.',
             sunrise: 'n.d.',
             sunset: 'n.d.',
-            uvi: 'n.d.',
 
             // previsioni
             forecast: [],
+
             labels: ['SU', 'MO', 'TU', 'WED', 'TH', 'FR', 'SA'],
             dayTick: 0,
         };
     },
+
     methods: {
         handleSearch() {
             // DESCRIZIONE:
@@ -224,12 +228,13 @@ export default {
                     // la prima API call è ok, estraggo i dati dalla response
                     this.extractWeatherData(response.data);
 
-                    // creare una function di reset
+                    // creare una function di reset, da chiamare prima di estrarre i dati <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
                     this.place = ''; // resetto la Search bar
                     this.hint = 'es. "roma,it" (lo stato è opzionale)'; // ripristino hint
-                    this.resultsAvailable = true;
+                    this.currentDataAvailable = true;
                     this.forecast = [];
+                    this.forecastAvailable = true;
 
                     // preparo i parametri per la 2a API call
                     // località ricercata + api key + lingua + unità di misura + esclusioni
@@ -257,7 +262,6 @@ export default {
                 })
                 .catch((error) => {
                     this.loading = false; // disattivo la progress bar
-                    console.log('ERRORE ramo catch di axios');
                     this.handleError(error);
                 });
         },
@@ -270,24 +274,18 @@ export default {
             this.lon = data.coord.lon;
             this.city = data.name;
             this.country = data.sys.country;
-            this.temp = data.main.temp.toFixed(1);
+            this.temp = Math.round(data.main.temp);
+            this.feelsLike = Math.round(data.main.feels_like);
             this.description = data.weather[0].description;
             this.icon =
                 'http://openweathermap.org/img/wn/' +
                 data.weather[0].icon +
                 '@2x.png';
-            this.feelsLike = data.main.feels_like.toFixed(1);
             this.pressure = data.main.pressure;
             this.humidity = data.main.humidity;
 
             const date = new Date(data.dt * 1000).toUTCString(); // UTC time
-            // console.log('date UTC/GMT:', date);
-            // console.log('timezone:', data.timezone);
             const offsetZone = data.timezone; // timezone offset in secondi
-            // console.log(
-            //     'offset in ore rispetto IT :',
-            //     (offsetZone - 7200) / 3600
-            // );
             this.dt = moment
                 .utc(date)
                 .add(offsetZone, 's')
@@ -312,26 +310,17 @@ export default {
 
             console.log('oneCallResponse:', data);
 
-            // this.uvi = data.current.uvi;
-
             // previsioni
-            const forecastLength = data.daily.length;
+            const forecastQty = data.daily.length;
             const offsetZone = data.timezone_offset; // timezone offset in secondi
 
-            console.log('forcastLength:', forecastLength);
-            console.log('offsetZone:', offsetZone);
-
-            for (let i = 1; i <= data.daily.length - 1; i++) {
+            for (let i = 1; i <= forecastQty - 1; i++) {
                 const forecastDate = new Date(
                     data.daily[i].dt * 1000
                 ).toUTCString(); // UTC time
-                console.log('date UTC/GMT:', forecastDate);
 
-                console.log(
-                    'weekday moment:',
-                    moment.utc(forecastDate).add(offsetZone, 's').format('dddd')
-                );
                 const forecastObj = {
+                    id: i - 1,
                     weekday: moment
                         .utc(forecastDate)
                         .add(offsetZone, 's')
@@ -340,16 +329,41 @@ export default {
                         'http://openweathermap.org/img/wn/' +
                         data.daily[i].weather[0].icon +
                         '@2x.png',
-                    tempMin: data.daily[i].temp.min.toFixed(1),
-                    tempMax: data.daily[i].temp.max.toFixed(1),
-                };
+                    tempMin: Math.round(data.daily[i].temp.min),
+                    tempMax: Math.round(data.daily[i].temp.max),
 
-                // console.log('singola forecast:', forecastObj);
+                    // dettagli previsioni
+                    description: data.daily[i].weather[0].description,
+
+                    tempMorning: Math.round(data.daily[i].temp.morn),
+                    tempNoon: Math.round(data.daily[i].temp.day),
+                    tempEvening: Math.round(data.daily[i].temp.eve),
+                    tempNight: Math.round(data.daily[i].temp.night),
+
+                    uvi: data.daily[i].uvi,
+
+                    sunrise: moment
+                        .utc(
+                            new Date(data.daily[i].sunrise * 1000).toUTCString()
+                        )
+                        .add(offsetZone, 's')
+                        .format('LT'),
+                    sunset: moment
+                        .utc(
+                            new Date(data.daily[i].sunset * 1000).toUTCString()
+                        )
+                        .add(offsetZone, 's')
+                        .format('LT'),
+
+                    humidity: data.daily[i].humidity,
+                    pressure: data.daily[i].pressure,
+                    pop: data.daily[i].pop * 100,
+                    rain: data.daily[i].rain,
+                };
 
                 this.forecast.push(forecastObj);
             }
-
-            // console.log('forecast array di oggetti:', this.forecast);
+            console.log('forecast:', this.forecast);
         },
 
         handleError(error) {
@@ -361,14 +375,15 @@ export default {
             // console.log('error.config', error.config);
             // console.log('error.config.url', error.config.url);
 
-            console.log('handleError called!');
+            console.log('ERROR axios call failed');
 
             if (error.config.url.includes('/weather?')) {
                 // località non trovata (weather endpoint)
                 this.hint = 'Località non trovata!';
             } else {
                 // problemi a recuperare le previsioni (oneCall endpoint)
-                this.hint = 'ATTENZIONE: alcuni dati non sono disponibili!';
+                this.hint = 'ATTENZIONE: previsioni non disponibili!';
+                this.forecastAvailable = false;
             }
         },
     },
