@@ -77,11 +77,6 @@
                                 {{ pressure }}hPa</v-list-item-subtitle
                             >
 
-                            <!-- <v-list-item-subtitle
-                                ><v-icon>mdi-sunglasses</v-icon>&nbsp;indice UV
-                                {{ uvi }}
-                            </v-list-item-subtitle> -->
-
                             <v-list-item-subtitle
                                 ><v-icon>mdi-weather-sunset-up</v-icon>&nbsp;il
                                 sole sorge alle
@@ -99,44 +94,146 @@
                     <div v-if="forecastAvailable">
                         <h3 class="mt-5">Previsioni</h3>
 
-                        <v-list class="transparent">
-                            <v-list-item
-                                v-for="item in forecast"
-                                :key="item.weekday"
-                                class="forecast-list"
+                        <v-expansion-panels
+                            class="pb-5"
+                            :accordion="accordion"
+                            :popout="popout"
+                            :inset="inset"
+                            :multiple="multiple"
+                            :focusable="focusable"
+                            :flat="flat"
+                            :hover="hover"
+                            :tile="tile"
+                        >
+                            <v-expansion-panel
+                                v-for="(item, i) in forecast"
+                                :key="i"
+                                class=""
                             >
-                                <v-list-item-title>{{
-                                    item.weekday
-                                }}</v-list-item-title>
+                                <v-expansion-panel-header
+                                    color="cyan lighten-5"
+                                    class="py-0 pl-0 pr-4 text-center forecast-header"
+                                    style="max-height: 38px;"
+                                >
+                                    <v-list-item class="">
+                                        <v-list-item-title>{{
+                                            item.weekday
+                                        }}</v-list-item-title>
 
-                                <v-list-item-avatar>
-                                    <v-img
-                                        :src="item.icon"
-                                        alt="forecast icon"
-                                        width="46"
-                                    ></v-img>
-                                </v-list-item-avatar>
+                                        <v-list-item-avatar>
+                                            <v-img
+                                                :src="item.icon"
+                                                alt="forecast icon"
+                                                width="46"
+                                            ></v-img>
+                                        </v-list-item-avatar>
 
-                                <v-list-item-subtitle class="">
-                                    <span class="text-subtitle-2 blue--text"
-                                        >{{ item.tempMin }}&nbsp;&nbsp;
-                                    </span>
-                                    <span class="text-subtitle-2 red--text">
-                                        {{ item.tempMax }}</span
-                                    >
-                                </v-list-item-subtitle>
-                            </v-list-item>
-                        </v-list>
+                                        <v-list-item-subtitle class="">
+                                            <span
+                                                class="text-subtitle-2 blue--text"
+                                                >{{ item.tempMin }}&nbsp;&nbsp;
+                                            </span>
+                                            <span
+                                                class="text-subtitle-2 red--text"
+                                            >
+                                                {{ item.tempMax }}</span
+                                            >
+                                        </v-list-item-subtitle>
+                                    </v-list-item>
+                                </v-expansion-panel-header>
 
-                        <h4 class="mt-5">Dettagli</h4>
+                                <v-expansion-panel-content
+                                    color="cyan lighten-4"
+                                    class="pt-5"
+                                >
+                                    <h5>
+                                        Dettagli:
+                                    </h5>
+                                    <v-list-item>
+                                        <v-list-item-content>
+                                            <v-list-item-subtitle>
+                                                <v-icon
+                                                    >mdi-text-box-outline</v-icon
+                                                >&nbsp;
+                                                {{ item.description }}
+                                            </v-list-item-subtitle>
 
-                        <v-slider
-                            v-model="dayTick"
-                            :max="6"
-                            :tick-labels="labels"
-                            class="mx-4"
-                            ticks
-                        ></v-slider>
+                                            <v-list-item-subtitle>
+                                                <v-icon>mdi-chart-line</v-icon>
+                                                <v-icon>mdi-thermometer</v-icon
+                                                >&deg;C &nbsp;
+                                                {{ item.tempMorning
+                                                }}<v-icon
+                                                    >mdi-arrow-right-bold</v-icon
+                                                >
+                                                {{ item.tempNoon
+                                                }}<v-icon
+                                                    >mdi-arrow-right-bold</v-icon
+                                                >
+                                                {{ item.tempEvening
+                                                }}<v-icon
+                                                    >mdi-arrow-right-bold</v-icon
+                                                >
+                                                {{ item.tempNight }}
+                                            </v-list-item-subtitle>
+
+                                            <v-list-item-subtitle
+                                                ><v-icon
+                                                    >mdi-weather-windy</v-icon
+                                                >&nbsp;
+                                                {{
+                                                    item.windSpeed
+                                                }}m/s&nbsp;&nbsp;
+                                                <v-icon
+                                                    >mdi-compass-outline</v-icon
+                                                >&nbsp;
+                                                {{
+                                                    item.windDeg
+                                                }}&deg;</v-list-item-subtitle
+                                            >
+
+                                            <v-list-item-subtitle
+                                                ><v-icon
+                                                    >mdi-water-percent</v-icon
+                                                >&nbsp; {{ item.humidity }}%
+                                                &nbsp;&nbsp;
+                                                <v-icon
+                                                    >mdi-format-line-weight</v-icon
+                                                >&nbsp; {{ pressure }}hPa
+                                            </v-list-item-subtitle>
+
+                                            <v-list-item-subtitle
+                                                ><v-icon>mdi-sunglasses</v-icon
+                                                >&nbsp;&nbsp;UVI (ore 12.00)
+                                                {{ item.uvi }}
+                                            </v-list-item-subtitle>
+
+                                            <v-list-item-subtitle
+                                                ><v-icon
+                                                    >mdi-weather-sunset-up</v-icon
+                                                >&nbsp;alba
+                                                {{ item.sunrise }}
+                                                &nbsp;&nbsp;
+                                                <v-icon
+                                                    >mdi-weather-sunset-down</v-icon
+                                                >&nbsp;tramonto
+                                                {{ sunset }}
+                                            </v-list-item-subtitle>
+
+                                            <v-list-item-subtitle>
+                                                <v-icon
+                                                    >mdi-weather-pouring</v-icon
+                                                >&nbsp;probabilità
+                                                {{ item.pop }}%
+                                                &nbsp;&nbsp;q.ta&nbsp;{{
+                                                    item.rain
+                                                }}
+                                            </v-list-item-subtitle>
+                                        </v-list-item-content>
+                                    </v-list-item>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
                     </div>
                 </div>
             </v-card>
@@ -191,8 +288,17 @@ export default {
             // previsioni
             forecast: [],
 
-            labels: ['SU', 'MO', 'TU', 'WED', 'TH', 'FR', 'SA'],
-            dayTick: 0,
+            // pannello dettaglio previsioni (accordion)
+            accordion: false,
+            popout: false,
+            inset: false,
+            multiple: false,
+            disabled: false,
+            readonly: false,
+            focusable: false,
+            flat: true,
+            hover: true,
+            tile: false,
         };
     },
 
@@ -357,8 +463,13 @@ export default {
 
                     humidity: data.daily[i].humidity,
                     pressure: data.daily[i].pressure,
-                    pop: data.daily[i].pop * 100,
-                    rain: data.daily[i].rain,
+                    pop: Math.round(data.daily[i].pop * 100),
+                    rain:
+                        typeof data.daily[i].rain !== 'undefined'
+                            ? data.daily[i].rain + 'mm'
+                            : 'n.d.',
+                    windDeg: data.daily[i].wind_deg,
+                    windSpeed: data.daily[i].wind_speed.toFixed(1),
                 };
 
                 this.forecast.push(forecastObj);
@@ -391,8 +502,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.forecast-list {
+.forecast-header {
     height: 38px;
     min-height: 38px;
+}
+.v-expansion-panel {
+    max-width: 95%;
+}
+
+::v-deep .v-expansion-panel-content .v-expansion-panel-content__wrap {
+    padding: 0 0 16px;
 }
 </style>
