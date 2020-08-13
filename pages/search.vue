@@ -17,7 +17,7 @@
                     @keypress.13="handleSearch"
                 ></v-text-field>
 
-                <!-- lista che contiene tutti i dati da visualizzare in pagina -->
+                <!-- contenitore di tutti i dati da visualizzare in pagina (correnti e previsioni) -->
                 <div v-if="currentDataAvailable">
                     <v-list-item three-line>
                         <v-list-item-content>
@@ -59,8 +59,8 @@
                     <v-list-item>
                         <v-list-item-content>
                             <v-list-item-subtitle
-                                ><v-icon>mdi-weather-windy</v-icon>&nbsp;vento
-                                {{ windSpeed }}m/s&nbsp;
+                                ><v-icon>mdi-weather-windy</v-icon
+                                >&nbsp;velocità {{ windSpeed }}m/s&nbsp;
                                 <v-icon>mdi-compass-outline</v-icon
                                 >&nbsp;direzione
                                 {{ windDeg }}&deg;</v-list-item-subtitle
@@ -111,7 +111,7 @@
                                 class=""
                             >
                                 <v-expansion-panel-header
-                                    color="cyan lighten-5"
+                                    color="cyan lighten-3"
                                     class="py-0 pl-0 pr-4 text-center forecast-header"
                                     style="max-height: 38px;"
                                 >
@@ -147,7 +147,7 @@
                                     class="pt-5"
                                 >
                                     <h5>
-                                        Dettagli:
+                                        <strong>{{ item.date }}</strong>
                                     </h5>
                                     <v-list-item>
                                         <v-list-item-content>
@@ -426,7 +426,10 @@ export default {
                 ).toUTCString(); // UTC time
 
                 const forecastObj = {
-                    id: i - 1,
+                    date: moment
+                        .utc(forecastDate)
+                        .add(offsetZone, 's')
+                        .format('D MMMM YYYY'),
                     weekday: moment
                         .utc(forecastDate)
                         .add(offsetZone, 's')
