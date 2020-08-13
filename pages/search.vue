@@ -16,21 +16,22 @@
                     @click:append="handleSearch"
                     @keypress.13="handleSearch"
                 ></v-text-field>
+                <!-- @focus="closeAllPanels" -->
 
                 <!-- contenitore di tutti i dati da visualizzare in pagina (correnti e previsioni) -->
                 <div v-if="currentDataAvailable">
                     <v-list-item three-line>
                         <v-list-item-content>
-                            <v-list-item-title class="headline">
-                                <strong>{{ city }}</strong
-                                >, {{ country }}
+                            <v-list-item-title class="headline text-wrap">
+                                <strong>{{ currentData.city }}</strong
+                                >, {{ currentData.country }}
                             </v-list-item-title>
                             <v-list-item-subtitle
-                                >{{ dt }}
+                                >{{ currentData.dt }}
                             </v-list-item-subtitle>
                             <v-list-item-subtitle>
                                 <strong class="text-h5">{{
-                                    description
+                                    currentData.description
                                 }}</strong>
                             </v-list-item-subtitle>
                         </v-list-item-content>
@@ -39,16 +40,23 @@
                     <v-card-text>
                         <v-row align="center">
                             <v-col class="text-right" cols="6">
-                                <span class="display-1">{{ temp }}&deg;C</span
+                                <span class="display-1"
+                                    ><v-icon>mdi-thermometer</v-icon
+                                    >{{ currentData.temp }}&deg;C</span
                                 ><br />
                                 <span class="text-subtitle-2 grey--text"
-                                    >percepita {{ feelsLike }}&deg;C</span
+                                    >percepita
+                                    {{ currentData.feelsLike }}&deg;C</span
                                 >
                             </v-col>
                             <v-col cols="6" class="">
                                 <v-img
-                                    class=""
-                                    :src="icon"
+                                    :class="
+                                        currentData.iconCode == '01d'
+                                            ? 'weather-sunny'
+                                            : 'weather-cloudy'
+                                    "
+                                    :src="currentData.iconPath"
                                     alt="weather icon"
                                     width="92"
                                 ></v-img>
@@ -60,69 +68,70 @@
                         <v-list-item-content>
                             <v-list-item-subtitle
                                 ><v-icon>mdi-weather-windy</v-icon
-                                >&nbsp;velocità {{ windSpeed }}m/s&nbsp;
+                                >&nbsp;velocità
+                                {{ currentData.windSpeed }}&nbsp;
                                 <v-icon>mdi-compass-outline</v-icon
                                 >&nbsp;direzione
-                                {{ windDeg }}&deg;</v-list-item-subtitle
+                                {{ currentData.windDeg }}</v-list-item-subtitle
                             >
 
                             <v-list-item-subtitle
                                 ><v-icon>mdi-water-percent</v-icon>&nbsp;umidità
-                                {{ humidity }}%</v-list-item-subtitle
+                                {{ currentData.humidity }}</v-list-item-subtitle
                             >
 
                             <v-list-item-subtitle
                                 ><v-icon>mdi-format-line-weight</v-icon
                                 >&nbsp;pressione
-                                {{ pressure }}hPa</v-list-item-subtitle
+                                {{ currentData.pressure }}</v-list-item-subtitle
                             >
 
                             <v-list-item-subtitle
                                 ><v-icon>mdi-weather-sunset-up</v-icon>&nbsp;il
                                 sole sorge alle
-                                {{ sunrise }}
+                                {{ currentData.sunrise }}
                             </v-list-item-subtitle>
 
                             <v-list-item-subtitle
                                 ><v-icon>mdi-weather-sunset-down</v-icon
                                 >&nbsp;il sole tramonta alle
-                                {{ sunset }}
+                                {{ currentData.sunset }}
                             </v-list-item-subtitle>
                         </v-list-item-content>
                     </v-list-item>
 
-                    <div v-if="forecastAvailable">
+                    <div v-if="forecastsAvailable">
                         <h3 class="mt-5">Previsioni</h3>
 
                         <v-expansion-panels
+                            v-model="openedPanel"
                             class="pb-5"
-                            :accordion="accordion"
-                            :popout="popout"
-                            :inset="inset"
-                            :multiple="multiple"
-                            :focusable="focusable"
-                            :flat="flat"
-                            :hover="hover"
-                            :tile="tile"
+                            accordion
+                            flat
+                            hover
                         >
                             <v-expansion-panel
-                                v-for="(item, i) in forecast"
+                                v-for="(forecast, i) in forecasts"
                                 :key="i"
                                 class=""
                             >
                                 <v-expansion-panel-header
-                                    color="cyan lighten-3"
                                     class="py-0 pl-0 pr-4 text-center forecast-header"
                                     style="max-height: 38px;"
                                 >
                                     <v-list-item class="">
                                         <v-list-item-title>{{
-                                            item.weekday
+                                            forecast.weekday
                                         }}</v-list-item-title>
 
                                         <v-list-item-avatar>
                                             <v-img
-                                                :src="item.icon"
+                                                :class="
+                                                    forecast.iconCode == '01d'
+                                                        ? 'weather-sunny'
+                                                        : 'weather-cloudy'
+                                                "
+                                                :src="forecast.iconPath"
                                                 alt="forecast icon"
                                                 width="46"
                                             ></v-img>
@@ -131,12 +140,14 @@
                                         <v-list-item-subtitle class="">
                                             <span
                                                 class="text-subtitle-2 blue--text"
-                                                >{{ item.tempMin }}&nbsp;&nbsp;
+                                                >{{
+                                                    forecast.tempMin
+                                                }}&nbsp;&nbsp;
                                             </span>
                                             <span
                                                 class="text-subtitle-2 red--text"
                                             >
-                                                {{ item.tempMax }}</span
+                                                {{ forecast.tempMax }}</span
                                             >
                                         </v-list-item-subtitle>
                                     </v-list-item>
@@ -147,7 +158,7 @@
                                     class="pt-5"
                                 >
                                     <h5>
-                                        <strong>{{ item.date }}</strong>
+                                        <strong>{{ forecast.date }}</strong>
                                     </h5>
                                     <v-list-item>
                                         <v-list-item-content>
@@ -155,79 +166,81 @@
                                                 <v-icon
                                                     >mdi-text-box-outline</v-icon
                                                 >&nbsp;
-                                                {{ item.description }}
+                                                {{ forecast.description }}
                                             </v-list-item-subtitle>
 
-                                            <v-list-item-subtitle>
+                                            <!-- <v-list-item-subtitle>
                                                 <v-icon>mdi-chart-line</v-icon>
                                                 <v-icon>mdi-thermometer</v-icon
-                                                >&deg;C &nbsp;
-                                                {{ item.tempMorning
+                                                >&nbsp; {{ forecast.tempMorning
                                                 }}<v-icon
                                                     >mdi-arrow-right-bold</v-icon
                                                 >
-                                                {{ item.tempNoon
+                                                {{ forecast.tempNoon
                                                 }}<v-icon
                                                     >mdi-arrow-right-bold</v-icon
                                                 >
-                                                {{ item.tempEvening
+                                                {{ forecast.tempEvening
                                                 }}<v-icon
                                                     >mdi-arrow-right-bold</v-icon
                                                 >
-                                                {{ item.tempNight }}
-                                            </v-list-item-subtitle>
+                                                {{ forecast.tempNight }}
+                                            </v-list-item-subtitle> -->
 
                                             <v-list-item-subtitle
                                                 ><v-icon
                                                     >mdi-weather-windy</v-icon
                                                 >&nbsp;
                                                 {{
-                                                    item.windSpeed
-                                                }}m/s&nbsp;&nbsp;
+                                                    forecast.windSpeed
+                                                }}&nbsp;&nbsp;
                                                 <v-icon
                                                     >mdi-compass-outline</v-icon
                                                 >&nbsp;
                                                 {{
-                                                    item.windDeg
-                                                }}&deg;</v-list-item-subtitle
+                                                    forecast.windDeg
+                                                }}</v-list-item-subtitle
                                             >
 
                                             <v-list-item-subtitle
                                                 ><v-icon
                                                     >mdi-water-percent</v-icon
-                                                >&nbsp; {{ item.humidity }}%
+                                                >&nbsp; {{ forecast.humidity }}
                                                 &nbsp;&nbsp;
                                                 <v-icon
                                                     >mdi-format-line-weight</v-icon
-                                                >&nbsp; {{ pressure }}hPa
+                                                >&nbsp; {{ forecast.pressure }}
                                             </v-list-item-subtitle>
 
                                             <v-list-item-subtitle
                                                 ><v-icon>mdi-sunglasses</v-icon
                                                 >&nbsp;&nbsp;UVI (ore 12.00)
-                                                {{ item.uvi }}
+                                                {{ forecast.uvi }}
                                             </v-list-item-subtitle>
 
                                             <v-list-item-subtitle
                                                 ><v-icon
                                                     >mdi-weather-sunset-up</v-icon
                                                 >&nbsp;alba
-                                                {{ item.sunrise }}
+                                                {{ forecast.sunrise }}
                                                 &nbsp;&nbsp;
                                                 <v-icon
                                                     >mdi-weather-sunset-down</v-icon
                                                 >&nbsp;tramonto
-                                                {{ sunset }}
+                                                {{ forecast.sunset }}
                                             </v-list-item-subtitle>
 
                                             <v-list-item-subtitle>
                                                 <v-icon
                                                     >mdi-weather-pouring</v-icon
                                                 >&nbsp;probabilità
-                                                {{ item.pop }}%
-                                                &nbsp;&nbsp;q.ta&nbsp;{{
-                                                    item.rain
-                                                }}
+                                                {{ forecast.pop }}
+                                                <span
+                                                    v-if="forecast.pop != '0%'"
+                                                    >&nbsp;&nbsp;<v-icon
+                                                        >mdi-water-outline</v-icon
+                                                    >{{ forecast.rain }}</span
+                                                >
                                             </v-list-item-subtitle>
                                         </v-list-item-content>
                                     </v-list-item>
@@ -266,39 +279,14 @@ export default {
 
             // esiti chiamate API
             currentDataAvailable: false,
-            forecastAvailable: true,
+            forecastsAvailable: true,
 
             // meteo corrente
-            lat: 'n.d.',
-            lon: 'n.d.',
-            city: '-',
-            country: '-',
-            dt: '-',
-            description: '-',
-            icon: '@/assets/images/icons/00@2x.png',
-            temp: 'n.d.',
-            feelsLike: 'n.d',
-            humidity: 'n.d.',
-            pressure: 'n.d.',
-            windSpeed: 'n.d.',
-            windDeg: 'n.d.',
-            sunrise: 'n.d.',
-            sunset: 'n.d.',
+            currentData: {},
 
             // previsioni
-            forecast: [],
-
-            // pannello dettaglio previsioni (accordion)
-            accordion: false,
-            popout: false,
-            inset: false,
-            multiple: false,
-            disabled: false,
-            readonly: false,
-            focusable: false,
-            flat: true,
-            hover: true,
-            tile: false,
+            forecasts: [],
+            openedPanel: null,
         };
     },
 
@@ -313,6 +301,7 @@ export default {
             // vengono comunque visualizzati.
 
             this.loading = true; // attivo la progress bar
+            this.openedPanel = null; // chiudo eventuali pannelli dell'accordion aperti
 
             // località ricercata + api key + lingua + unità di misura
             const weatherParams =
@@ -331,24 +320,23 @@ export default {
                     console.log('SUCCESS 1st axios call');
                     console.log('response:', response);
 
+                    this.place = ''; // svuoto la Search bar
+                    this.hint = 'es. "roma,it" (lo stato è opzionale)'; // ripristino hint al msg iniziale
+                    this.currentDataAvailable = true; // ho disponibili i dati del meteo corrente
+                    this.currentData = {};
+                    this.forecasts = [];
+                    // this.forecastsAvailable = true;
+
                     // la prima API call è ok, estraggo i dati dalla response
                     this.extractWeatherData(response.data);
-
-                    // creare una function di reset, da chiamare prima di estrarre i dati <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-                    this.place = ''; // resetto la Search bar
-                    this.hint = 'es. "roma,it" (lo stato è opzionale)'; // ripristino hint
-                    this.currentDataAvailable = true;
-                    this.forecast = [];
-                    this.forecastAvailable = true;
 
                     // preparo i parametri per la 2a API call
                     // località ricercata + api key + lingua + unità di misura + esclusioni
                     const oneCallParams =
                         '?lat=' +
-                        response.data.coord.lat +
+                        this.currentData.lat +
                         '&lon=' +
-                        response.data.coord.lon +
+                        this.currentData.lon +
                         '&appid=' +
                         APPID +
                         '&lang=' +
@@ -363,6 +351,8 @@ export default {
                     // la seconda API call è ok, ho le previsioni
                     console.log('SUCCESS 2nd axios call');
                     this.loading = false; // disattivo la progress bar
+                    this.forecastsAvailable = true; // ho disponibili i dati delle previsioni
+
                     // ho tutti i dati da visualizzare in oneCallResponse
                     this.extractOnecallData(oneCallResponse.data);
                 })
@@ -376,37 +366,43 @@ export default {
             // DESCRIZIONE:
             // valorizza le variabili locali in data() con i dati ricevuti dalle API
 
-            this.lat = data.coord.lat;
-            this.lon = data.coord.lon;
-            this.city = data.name;
-            this.country = data.sys.country;
-            this.temp = Math.round(data.main.temp);
-            this.feelsLike = Math.round(data.main.feels_like);
-            this.description = data.weather[0].description;
-            this.icon =
+            this.currentData.lat = data.coord.lat;
+            this.currentData.lon = data.coord.lon;
+            this.currentData.city = data.name;
+            this.currentData.country = data.sys.country;
+            this.currentData.temp = Math.round(data.main.temp);
+            this.currentData.feelsLike = Math.round(data.main.feels_like);
+            this.currentData.description = data.weather[0].description;
+            this.currentData.iconCode = data.weather[0].icon;
+            this.currentData.iconPath =
                 'http://openweathermap.org/img/wn/' +
                 data.weather[0].icon +
                 '@2x.png';
-            this.pressure = data.main.pressure;
-            this.humidity = data.main.humidity;
+            this.currentData.pressure = data.main.pressure + 'hPa';
+            this.currentData.humidity = data.main.humidity + '%';
 
             const date = new Date(data.dt * 1000).toUTCString(); // UTC time
             const offsetZone = data.timezone; // timezone offset in secondi
-            this.dt = moment
+            this.currentData.dt = moment
                 .utc(date)
                 .add(offsetZone, 's')
                 .format('dddd, D MMMM YYYY LT');
 
             const sunrise = new Date(data.sys.sunrise * 1000).toUTCString();
             const sunset = new Date(data.sys.sunset * 1000).toUTCString();
-            this.sunrise = moment
+            this.currentData.sunrise = moment
                 .utc(sunrise)
                 .add(offsetZone, 's')
                 .format('LT');
-            this.sunset = moment.utc(sunset).add(offsetZone, 's').format('LT');
+            this.currentData.sunset = moment
+                .utc(sunset)
+                .add(offsetZone, 's')
+                .format('LT');
 
-            this.windSpeed = data.wind.speed.toFixed(1);
-            this.windDeg = data.wind.deg.toFixed(0);
+            this.currentData.windSpeed = data.wind.speed.toFixed(1) + 'm/s';
+            this.currentData.windDeg = data.wind.deg.toFixed(0) + '\xB0';
+
+            console.log('currentData:', this.currentData);
         },
 
         extractOnecallData(data) {
@@ -417,10 +413,10 @@ export default {
             console.log('oneCallResponse:', data);
 
             // previsioni
-            const forecastQty = data.daily.length;
+            const forecastsQty = data.daily.length;
             const offsetZone = data.timezone_offset; // timezone offset in secondi
 
-            for (let i = 1; i <= forecastQty - 1; i++) {
+            for (let i = 1; i <= forecastsQty - 1; i++) {
                 const forecastDate = new Date(
                     data.daily[i].dt * 1000
                 ).toUTCString(); // UTC time
@@ -434,20 +430,21 @@ export default {
                         .utc(forecastDate)
                         .add(offsetZone, 's')
                         .format('dddd'),
-                    icon:
+                    iconCode: data.daily[i].weather[0].icon,
+                    iconPath:
                         'http://openweathermap.org/img/wn/' +
                         data.daily[i].weather[0].icon +
                         '@2x.png',
                     tempMin: Math.round(data.daily[i].temp.min),
                     tempMax: Math.round(data.daily[i].temp.max),
 
-                    // dettagli previsioni
+                    // dettagli previsioni (accordion)
                     description: data.daily[i].weather[0].description,
 
-                    tempMorning: Math.round(data.daily[i].temp.morn),
-                    tempNoon: Math.round(data.daily[i].temp.day),
-                    tempEvening: Math.round(data.daily[i].temp.eve),
-                    tempNight: Math.round(data.daily[i].temp.night),
+                    // tempMorning: Math.round(data.daily[i].temp.morn) + '\xB0',
+                    // tempNoon: Math.round(data.daily[i].temp.day) + '\xB0',
+                    // tempEvening: Math.round(data.daily[i].temp.eve) + '\xB0',
+                    // tempNight: Math.round(data.daily[i].temp.night) + '\xB0',
 
                     uvi: data.daily[i].uvi,
 
@@ -464,20 +461,20 @@ export default {
                         .add(offsetZone, 's')
                         .format('LT'),
 
-                    humidity: data.daily[i].humidity,
-                    pressure: data.daily[i].pressure,
-                    pop: Math.round(data.daily[i].pop * 100),
+                    humidity: data.daily[i].humidity + '%',
+                    pressure: data.daily[i].pressure + 'hPa',
+                    pop: Math.round(data.daily[i].pop * 100) + '%',
                     rain:
                         typeof data.daily[i].rain !== 'undefined'
                             ? data.daily[i].rain + 'mm'
                             : 'n.d.',
-                    windDeg: data.daily[i].wind_deg,
-                    windSpeed: data.daily[i].wind_speed.toFixed(1),
+                    windDeg: data.daily[i].wind_deg + '\xB0',
+                    windSpeed: data.daily[i].wind_speed.toFixed(1) + 'm/s',
                 };
 
-                this.forecast.push(forecastObj);
+                this.forecasts.push(forecastObj);
             }
-            console.log('forecast:', this.forecast);
+            console.log('forecasts:', this.forecasts);
         },
 
         handleError(error) {
@@ -489,7 +486,7 @@ export default {
             // console.log('error.config', error.config);
             // console.log('error.config.url', error.config.url);
 
-            console.log('ERROR axios call failed');
+            console.log('ERROR an axios call failed');
 
             if (error.config.url.includes('/weather?')) {
                 // località non trovata (weather endpoint)
@@ -497,7 +494,7 @@ export default {
             } else {
                 // problemi a recuperare le previsioni (oneCall endpoint)
                 this.hint = 'ATTENZIONE: previsioni non disponibili!';
-                this.forecastAvailable = false;
+                this.forecastsAvailable = false;
             }
         },
     },
@@ -505,9 +502,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.weather-cloudy {
+    filter: drop-shadow(0 0 5px gray);
+}
+.weather-sunny {
+    filter: drop-shadow(0 0 5px $yellow-accent-2);
+}
 .forecast-header {
     height: 38px;
     min-height: 38px;
+    background-color: $cyan-lighten-5;
 }
 .v-expansion-panel {
     max-width: 95%;
@@ -515,5 +519,12 @@ export default {
 
 ::v-deep .v-expansion-panel-content .v-expansion-panel-content__wrap {
     padding: 0 0 16px;
+}
+
+::v-deep .v-expansion-panel-header--active {
+    background-color: $cyan-lighten-3;
+    // border-color: $cyan-lighten-3;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
 }
 </style>
