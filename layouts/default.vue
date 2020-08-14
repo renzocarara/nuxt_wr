@@ -36,15 +36,19 @@
             <nuxt-link class="" to="/">
                 <v-img
                     class="mx-2"
-                    :src="require('../assets/images/nwr_logo.png')"
+                    :src="require('../assets/images/morgana_logo.png')"
                     max-height="35"
-                    max-width="35"
+                    max-width="45"
                     contain
                 ></v-img>
             </nuxt-link>
 
             <nuxt-link class="text-decoration-none text-secondary-color" to="/">
-                <strong><v-toolbar-title v-text="title" /></strong>
+                <!-- <strong><v-toolbar-title v-text="title" /></strong> -->
+                <v-card-title class="headline">
+                    <span class="text-secondary-color"><strong>m</strong></span
+                    ><span class="white--text">organa</span>
+                </v-card-title>
             </nuxt-link>
             <v-spacer />
 
@@ -95,7 +99,7 @@ export default {
                     to: '/about',
                 },
             ],
-            title: 'NWR',
+            title: 'morgana',
         };
     },
 };

@@ -2,17 +2,19 @@
     <v-layout column justify-center align-center>
         <v-flex>
             <v-card color="cyan lighten-5">
-                <nuxt-logo-animation />
-                <v-card-title class="headline">
-                    <span class="text-secondary-color">N</span>uxt&nbsp;
-                    <span class="text-secondary-color">W</span>eather&nbsp;
-                    <span class="text-secondary-color">R</span>eport&nbsp;
+                <!-- <nuxt-logo-animation /> -->
+                <v-card-title class="headline text-center">
+                    <!-- <span class="text-secondary-color"><strong>m</strong></span
+                    >organa&nbsp; -->
+                    <span
+                        ><v-icon
+                            class="info-icon"
+                            style="font-size: 30px; color: red;"
+                            >mdi-information</v-icon
+                        ></span
+                    >&nbsp; Informazioni
                 </v-card-title>
                 <v-card-text>
-                    <h3>
-                        <span><v-icon>mdi-information</v-icon></span>
-                        Informazioni
-                    </h3>
                     <h5>SCOPO</h5>
                     <p>
                         Questa applicazione è un esercizio sull'utilizzo del
@@ -27,8 +29,8 @@
                     <h5>FUNZIONAMENTO</h5>
                     <p>
                         Permette di ricercare informazioni meteo e previsioni su
-                        più di 200000 località nel mondo. Sfrutta delle chiamate
-                        API messe a disposizione da
+                        più di 200.000 località nel mondo.<br />
+                        Sfrutta delle chiamate API messe a disposizione da
                         <a
                             href="https://openweathermap.org/"
                             target="_blank"
@@ -39,8 +41,9 @@
                     <h5>UTILIZZO</h5>
                     <p>
                         E' necessario inserire il nome di una località da
-                        ricercare. E' possibile opzionalmente specificare anche
-                        un codice della nazione , alcuni esempi:
+                        ricercare.<br />
+                        E' possibile opzionalmente specificare anche un codice
+                        della nazione, alcuni esempi:
                     </p>
                     <ul>
                         <li>roma,it</li>
@@ -52,7 +55,8 @@
                     <p>
                         E' possibile anche ricercare tramite codice postale, nel
                         qual caso è nesessario specificare il codice della
-                        nazione (se non viene specificato il default è US)
+                        nazione<br />
+                        (se non viene specificato il default è US), alcuni
                         esempi:
                     </p>
                     <ul>
@@ -84,16 +88,24 @@
                             />
                         </a>
                     </p>
-                    <!-- <div>
-                        Icons made by
-                        <a href="http://www.freepik.com" title="Freepik"
+                    <div>
+                        Icone bandierine paesi create da
+                        <a
+                            href="http://www.freepik.com"
+                            title="Freepik"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             >Freepik</a
                         >
-                        from
-                        <a href="https://www.flaticon.com/" title="Flaticon"
+                        su
+                        <a
+                            href="https://www.flaticon.com/"
+                            title="Flaticon"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             >www.flaticon.com</a
                         >
-                    </div> -->
+                    </div>
                 </v-card-text>
                 <hr class="my-3" />
                 <v-card-actions>
@@ -111,11 +123,11 @@
 </template>
 
 <script>
-import NuxtLogoAnimation from '~/components/NuxtLogoAnimation.vue';
+// import NuxtLogoAnimation from '~/components/NuxtLogoAnimation.vue';
 
 export default {
     components: {
-        NuxtLogoAnimation,
+        // NuxtLogoAnimation,
     },
 };
 </script>
@@ -126,5 +138,8 @@ export default {
     width: 75px;
     height: 34px;
     vertical-align: text-bottom;
+}
+h5 {
+    color: $secondary-color;
 }
 </style>

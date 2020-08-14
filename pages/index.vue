@@ -3,16 +3,8 @@
         <v-flex>
             <v-card class="mx-auto" max-width="400" color="cyan lighten-5">
                 <v-card-title class="headline">
-                    <span class="text-secondary-color"><strong>N</strong></span
-                    >uxt&nbsp;
-                    <span class="text-secondary-color"><strong>W</strong></span
-                    >eather&nbsp;
-                    <span class="text-secondary-color"><strong>R</strong></span
-                    >eport&nbsp;
+                    <strong>Meteo e previsioni</strong>
                 </v-card-title>
-                <v-card-subtitle
-                    ><strong>Meteo e previsioni</strong></v-card-subtitle
-                >
                 <v-card-text>
                     <div class="text-center">
                         <weather-logo-animation />
