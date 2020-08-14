@@ -26,8 +26,8 @@ export default {
             },
             {
                 hid: 'description',
-                name: 'description',
-                content: process.env.npm_package_description || '',
+                name: 'mini app che fornisce dati e previsioni metereologiche',
+                content: 'version 0.1.0',
             },
             {
                 property: 'og:image',
