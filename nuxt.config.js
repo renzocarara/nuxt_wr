@@ -16,8 +16,8 @@ export default {
      ** See https://nuxtjs.org/api/configuration-head
      */
     head: {
-        titleTemplate: '%s - ' + process.env.npm_package_name,
-        title: process.env.npm_package_name || '',
+        titleTemplate: '%s - ' + 'Meteo Web App',
+        title: 'Morgana',
         meta: [
             { charset: 'utf-8' },
             {
@@ -29,6 +29,12 @@ export default {
                 name: 'description',
                 content: process.env.npm_package_description || '',
             },
+            {
+                property: 'og:image',
+                content: 'https://morgana.netlify.app/morgana_snap.png',
+            },
+
+            { property: 'og:url', content: 'https://morgana.netlify.app/' },
         ],
         link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
