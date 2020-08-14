@@ -4,8 +4,6 @@
             <v-card color="cyan lighten-5">
                 <!-- <nuxt-logo-animation /> -->
                 <v-card-title class="headline text-center">
-                    <!-- <span class="text-secondary-color"><strong>m</strong></span
-                    >organa&nbsp; -->
                     <span
                         ><v-icon
                             class="info-icon"
@@ -123,12 +121,8 @@
 </template>
 
 <script>
-// import NuxtLogoAnimation from '~/components/NuxtLogoAnimation.vue';
-
 export default {
-    components: {
-        // NuxtLogoAnimation,
-    },
+    components: {},
 };
 </script>
 

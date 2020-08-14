@@ -115,6 +115,7 @@
                         </v-list-item-content>
                     </v-list-item>
 
+                    <!-- pannello Previsioni -->
                     <div v-if="forecastsAvailable">
                         <h3 class="mt-5">Previsioni</h3>
 
@@ -182,24 +183,6 @@
                                                 >&nbsp;
                                                 {{ forecast.description }}
                                             </v-list-item-subtitle>
-
-                                            <!-- <v-list-item-subtitle>
-                                                <v-icon>mdi-chart-line</v-icon>
-                                                <v-icon>mdi-thermometer</v-icon
-                                                >&nbsp; {{ forecast.tempMorning
-                                                }}<v-icon
-                                                    >mdi-arrow-right-bold</v-icon
-                                                >
-                                                {{ forecast.tempNoon
-                                                }}<v-icon
-                                                    >mdi-arrow-right-bold</v-icon
-                                                >
-                                                {{ forecast.tempEvening
-                                                }}<v-icon
-                                                    >mdi-arrow-right-bold</v-icon
-                                                >
-                                                {{ forecast.tempNight }}
-                                            </v-list-item-subtitle> -->
 
                                             <v-list-item-subtitle
                                                 ><v-icon
@@ -333,8 +316,8 @@ export default {
             axios
                 .get(BASE_URL + EP_WEATHER + weatherParams)
                 .then((response) => {
-                    console.log('SUCCESS 1st axios call');
-                    console.log('response:', response);
+                    // console.log('SUCCESS 1st axios call');
+                    // console.log('response:', response);
 
                     this.place = ''; // svuoto la Search bar
                     this.hint = 'es. "roma,it" (lo stato è opzionale)'; // ripristino hint al msg iniziale
@@ -364,7 +347,7 @@ export default {
                 })
                 .then((oneCallResponse) => {
                     // la seconda API call è ok, ho le previsioni
-                    console.log('SUCCESS 2nd axios call');
+                    // console.log('SUCCESS 2nd axios call');
                     this.loading = false; // disattivo la progress bar
                     this.forecastsAvailable = true; // ho disponibili i dati delle previsioni
 
@@ -422,7 +405,7 @@ export default {
             this.currentData.windSpeed = data.wind.speed.toFixed(1) + 'm/s';
             this.currentData.windDeg = data.wind.deg.toFixed(0) + '\xB0';
 
-            console.log('currentData:', this.currentData);
+            // console.log('currentData:', this.currentData);
         },
 
         extractOnecallData(data) {
@@ -430,7 +413,7 @@ export default {
             // viene chiamata se la 2a chiamata API ha successo
             // valorizza l'array "forecasts" in data() con i dati ricevuti dalle API
 
-            console.log('oneCallResponse:', data);
+            // console.log('oneCallResponse:', data);
 
             // previsioni
             const forecastsQty = data.daily.length;
@@ -494,7 +477,7 @@ export default {
 
                 this.forecasts.push(forecastObj);
             }
-            console.log('forecasts:', this.forecasts);
+            // console.log('forecasts:', this.forecasts);
         },
 
         handleError(error) {
@@ -506,7 +489,7 @@ export default {
             // console.log('error.config', error.config);
             // console.log('error.config.url', error.config.url);
 
-            console.log('ERROR an axios call failed');
+            // console.log('ERROR an axios call failed');
 
             if (error.config.url.includes('/weather?')) {
                 // località non trovata (weather endpoint)
@@ -548,7 +531,6 @@ export default {
 
 ::v-deep .v-expansion-panel-header--active {
     background-color: $cyan-lighten-3;
-    // border-color: $cyan-lighten-3;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }

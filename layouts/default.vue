@@ -44,7 +44,6 @@
             </nuxt-link>
 
             <nuxt-link class="text-decoration-none text-secondary-color" to="/">
-                <!-- <strong><v-toolbar-title v-text="title" /></strong> -->
                 <v-card-title class="headline">
                     <span class="text-secondary-color"><strong>m</strong></span
                     ><span class="white--text">organa</span>
@@ -99,7 +98,6 @@ export default {
                     to: '/about',
                 },
             ],
-            title: 'morgana',
         };
     },
 };
