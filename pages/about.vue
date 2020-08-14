@@ -53,7 +53,7 @@
                     <p>
                         E' possibile anche ricercare tramite codice postale, nel
                         qual caso è nesessario specificare il codice della
-                        nazione<br />
+                        nazione (ISO 3166 country code)<br />
                         (se non viene specificato il default è US), alcuni
                         esempi:
                     </p>
@@ -87,7 +87,7 @@
                         </a>
                     </p>
                     <div>
-                        Icone bandierine paesi create da
+                        Icone bandiere create da
                         <a
                             href="http://www.freepik.com"
                             title="Freepik"
