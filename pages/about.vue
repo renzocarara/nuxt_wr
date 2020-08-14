@@ -84,12 +84,25 @@
                             />
                         </a>
                     </p>
+                    <!-- <div>
+                        Icons made by
+                        <a href="http://www.freepik.com" title="Freepik"
+                            >Freepik</a
+                        >
+                        from
+                        <a href="https://www.flaticon.com/" title="Flaticon"
+                            >www.flaticon.com</a
+                        >
+                    </div> -->
                 </v-card-text>
                 <hr class="my-3" />
                 <v-card-actions>
                     <v-spacer />
                     <v-btn dark color="red accent-4" nuxt to="/">
-                        Back Home
+                        Home
+                    </v-btn>
+                    <v-btn dark color="red accent-4" nuxt to="/search">
+                        Ricerca
                     </v-btn>
                 </v-card-actions>
             </v-card>

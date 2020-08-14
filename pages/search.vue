@@ -16,12 +16,27 @@
                     @click:append="handleSearch"
                     @keypress.13="handleSearch"
                 ></v-text-field>
-                <!-- @focus="closeAllPanels" -->
 
                 <!-- contenitore di tutti i dati da visualizzare in pagina (correnti e previsioni) -->
                 <div v-if="currentDataAvailable">
                     <v-list-item three-line>
                         <v-list-item-content>
+                            <v-list-item-subtitle>
+                                <v-img
+                                    class="d-inline-block flag"
+                                    :src="
+                                        currentData.flag
+                                            ? currentData.flag
+                                            : require('../assets/images/flags/united-nations.svg')
+                                    "
+                                    alt="country flag"
+                                    width="30"
+                                ></v-img
+                                ><span class="text-caption"
+                                    >&nbsp;&nbsp; LAT {{ currentData.lat }}&deg;
+                                    &nbsp;LON {{ currentData.lon }}&deg;</span
+                                >
+                            </v-list-item-subtitle>
                             <v-list-item-title class="headline text-wrap">
                                 <strong>{{ currentData.city }}</strong
                                 >, {{ currentData.country }}
@@ -117,7 +132,6 @@
                             >
                                 <v-expansion-panel-header
                                     class="py-0 pl-0 pr-4 text-center forecast-header"
-                                    style="max-height: 38px;"
                                 >
                                     <v-list-item class="">
                                         <v-list-item-title>{{
@@ -232,7 +246,7 @@
 
                                             <v-list-item-subtitle>
                                                 <v-icon
-                                                    >mdi-weather-pouring</v-icon
+                                                    >mdi-umbrella-outline</v-icon
                                                 >&nbsp;probabilità
                                                 {{ forecast.pop }}
                                                 <span
@@ -286,6 +300,8 @@ export default {
 
             // previsioni
             forecasts: [],
+
+            // accordion opened panels
             openedPanel: null,
         };
     },
@@ -323,9 +339,8 @@ export default {
                     this.place = ''; // svuoto la Search bar
                     this.hint = 'es. "roma,it" (lo stato è opzionale)'; // ripristino hint al msg iniziale
                     this.currentDataAvailable = true; // ho disponibili i dati del meteo corrente
-                    this.currentData = {};
-                    this.forecasts = [];
-                    // this.forecastsAvailable = true;
+                    this.currentData = {}; // resetto dati meteo correnti
+                    this.forecasts = []; // resetto dati previsioni
 
                     // la prima API call è ok, estraggo i dati dalla response
                     this.extractWeatherData(response.data);
@@ -364,12 +379,17 @@ export default {
 
         extractWeatherData(data) {
             // DESCRIZIONE:
-            // valorizza le variabili locali in data() con i dati ricevuti dalle API
+            // valorizza l'oggetto "currentData" (meteo corrente) in data() con i dati ricevuti dalle API
 
             this.currentData.lat = data.coord.lat;
             this.currentData.lon = data.coord.lon;
             this.currentData.city = data.name;
             this.currentData.country = data.sys.country;
+
+            this.currentData.flag = require('../assets/images/flags/' +
+                this.currentData.country.toLowerCase() +
+                '.svg');
+
             this.currentData.temp = Math.round(data.main.temp);
             this.currentData.feelsLike = Math.round(data.main.feels_like);
             this.currentData.description = data.weather[0].description;
@@ -408,7 +428,7 @@ export default {
         extractOnecallData(data) {
             // DESCRIZIONE:
             // viene chiamata se la 2a chiamata API ha successo
-            // valorizza le variabili locali in data() con i dati ricevuti dalle API
+            // valorizza l'array "forecasts" in data() con i dati ricevuti dalle API
 
             console.log('oneCallResponse:', data);
 
@@ -435,8 +455,8 @@ export default {
                         'http://openweathermap.org/img/wn/' +
                         data.daily[i].weather[0].icon +
                         '@2x.png',
-                    tempMin: Math.round(data.daily[i].temp.min),
-                    tempMax: Math.round(data.daily[i].temp.max),
+                    tempMin: Math.round(data.daily[i].temp.min) + '\xB0',
+                    tempMax: Math.round(data.daily[i].temp.max) + '\xB0',
 
                     // dettagli previsioni (accordion)
                     description: data.daily[i].weather[0].description,
@@ -502,6 +522,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.flag {
+    vertical-align: middle;
+}
+
 .weather-cloudy {
     filter: drop-shadow(0 0 5px gray);
 }
@@ -511,6 +535,7 @@ export default {
 .forecast-header {
     height: 38px;
     min-height: 38px;
+    max-height: 38px;
     background-color: $cyan-lighten-5;
 }
 .v-expansion-panel {
