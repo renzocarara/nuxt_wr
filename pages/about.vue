@@ -73,37 +73,57 @@
                     <br />
                     <h5>CREDITS</h5>
                     <p>
-                        Dati meteo e previsioni forniti da
+                        Dati meteo
                         <br />
                         <a
                             href="https://openweathermap.org/"
                             target="_blank"
                             rel="noopener noreferrer"
                             ><img
-                                class="logo-badge"
+                                class="owm-logo"
                                 src="@/assets/images/owm_logo.png"
                                 alt="owm logo"
                             />
                         </a>
                     </p>
-                    <div>
-                        Icone bandiere create da
+                    <p>
+                        Country flags by <br />
                         <a
                             href="http://www.freepik.com"
                             title="Freepik"
                             target="_blank"
                             rel="noopener noreferrer"
-                            >Freepik</a
-                        >
-                        su
+                            ><img
+                                class="vert-align-sub"
+                                src="@/assets/images/freepik_logo.png"
+                                alt="freepik logo"
+                        /></a>
+                        &nbsp;from&nbsp;
                         <a
                             href="https://www.flaticon.com/"
                             title="Flaticon"
                             target="_blank"
                             rel="noopener noreferrer"
-                            >www.flaticon.com</a
-                        >
-                    </div>
+                            ><img
+                                class="vert-align-sub"
+                                src="@/assets/images/flaticon_logo.png"
+                                alt="flaticon logo"
+                        /></a>
+                    </p>
+                    <p>
+                        Deployed on
+                        <br />
+                        <a
+                            href="https://netlify.com/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            ><img
+                                class="netlify-logo"
+                                src="@/assets/images/netlify_logo.png"
+                                alt="netlify logo"
+                            />
+                        </a>
+                    </p>
                 </v-card-text>
                 <hr class="my-3" />
                 <v-card-actions>
@@ -128,10 +148,18 @@ export default {
 
 <style lang="scss" scoped>
 //
-.logo-badge {
+.owm-logo {
     width: 75px;
     height: 34px;
     vertical-align: text-bottom;
+}
+.netlify-logo {
+    width: 98px;
+    height: 35px;
+    vertical-align: text-bottom;
+}
+.vert-align-sub {
+    vertical-align: sub;
 }
 h5 {
     color: $secondary-color;

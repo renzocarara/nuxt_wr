@@ -70,6 +70,25 @@
                 </a
                 >Renzo Carara - &copy; {{ new Date().getFullYear() }}</span
             >
+            <v-spacer />
+            <div class="mobile">
+                Country flag Icons made by
+                <a
+                    href="https://www.flaticon.com/authors/freepik"
+                    title="Freepik"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Freepik</a
+                >
+                from
+                <a
+                    href="https://www.flaticon.com/"
+                    title="Flaticon"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >www.flaticon.com</a
+                >
+            </div>
         </v-footer>
     </v-app>
 </template>
@@ -106,5 +125,13 @@ export default {
 //
 .bgc-main {
     background-color: $cyan-lighten-4;
+}
+.mobile {
+    font-size: 12px;
+}
+@media screen and (max-width: 600px) {
+    .mobile {
+        font-size: 10px;
+    }
 }
 </style>
