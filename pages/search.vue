@@ -22,23 +22,24 @@
                     <v-list-item three-line>
                         <v-list-item-content>
                             <v-list-item-subtitle>
-                                <v-img
+                                <v-icon>mdi-crosshairs-gps</v-icon>
+                                <span class="text-caption"
+                                    >LAT {{ currentData.lat }}&deg; &nbsp;LON
+                                    {{ currentData.lon }}&deg;</span
+                                >
+                            </v-list-item-subtitle>
+                            <v-list-item-title class="headline text-wrap">
+                                <img
+                                    style="width: 30px;"
                                     class="d-inline-block flag"
                                     :src="
                                         currentData.flag
                                             ? currentData.flag
                                             : require('../assets/images/flags/united-nations.svg')
                                     "
-                                    alt="country flag"
-                                    width="30"
-                                ></v-img
-                                ><span class="text-caption"
-                                    >&nbsp;&nbsp; LAT {{ currentData.lat }}&deg;
-                                    &nbsp;LON {{ currentData.lon }}&deg;</span
-                                >
-                            </v-list-item-subtitle>
-                            <v-list-item-title class="headline text-wrap">
-                                <strong>{{ currentData.city }}</strong
+                                    alt="country
+                                flag"
+                                /><img /> <strong>{{ currentData.city }}</strong
                                 >, {{ currentData.country }}
                             </v-list-item-title>
                             <v-list-item-subtitle
