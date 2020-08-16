@@ -28,13 +28,13 @@
                     <p>
                         Permette di ricercare informazioni meteo e previsioni su
                         più di 200.000 località nel mondo.<br />
-                        Sfrutta delle chiamate API messe a disposizione da
+                        Sfrutta delle API messe a disposizione da
                         <a
                             href="https://openweathermap.org/"
                             target="_blank"
                             rel="noopener noreferrer"
                             >OpenWeatherMap</a
-                        >.
+                        >. Le API vengono chiamate tramite axios.
                     </p>
                     <h5>UTILIZZO</h5>
                     <p>

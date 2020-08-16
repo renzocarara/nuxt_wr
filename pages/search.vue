@@ -263,8 +263,11 @@ import {
     APPID,
     IT,
     METRIC,
-} from '@/constants/axios_constants.js';
-moment.locale('it');
+} from '@/constants/axios_constants.js'; // costanti per le chiamate axios
+
+const hideVirtualKeyboard = require('hide-virtual-keyboard'); //
+
+moment.locale('it'); // localizzazione per "moment"
 
 export default {
     data() {
@@ -299,6 +302,8 @@ export default {
             // La seconda serve per recuperare sostanzialmente le previsioni,
             // se questa seconda chiamata non dà esito positivo, i dati recuperati con la 1a chiamata
             // vengono comunque visualizzati.
+
+            hideVirtualKeyboard();
 
             this.loading = true; // attivo la progress bar
             this.openedPanel = null; // chiudo eventuali pannelli dell'accordion aperti
