@@ -5,9 +5,7 @@
                 <!-- <nuxt-logo-animation /> -->
                 <v-card-title class="headline text-center">
                     <span
-                        ><v-icon
-                            class="info-icon"
-                            style="font-size: 30px; color: red;"
+                        ><v-icon class="info-icon"
                             >mdi-information</v-icon
                         ></span
                     >&nbsp; Informazioni

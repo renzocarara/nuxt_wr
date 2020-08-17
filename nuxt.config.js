@@ -11,6 +11,11 @@ export default {
      ** See https://nuxtjs.org/api/configuration-target
      */
     target: 'static',
+
+    // generated 404.html instead of Netlify's 404 page.
+    generate: {
+        fallback: true,
+    },
     /*
      ** Headers of the page
      ** See https://nuxtjs.org/api/configuration-head
