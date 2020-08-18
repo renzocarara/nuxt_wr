@@ -2,10 +2,9 @@
     <v-layout column justify-center align-center>
         <v-flex>
             <v-card color="cyan lighten-5">
-                <!-- <nuxt-logo-animation /> -->
                 <v-card-title class="headline text-center">
                     <span
-                        ><v-icon class="info-icon"
+                        ><v-icon size="30" color="#d50000"
                             >mdi-information</v-icon
                         ></span
                     >&nbsp; Informazioni

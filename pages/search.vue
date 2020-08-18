@@ -349,20 +349,32 @@ export default {
                         METRIC +
                         '&exclude=minutely,hourly';
 
-                    return axios.get(BASE_URL + EP_ONECALL + oneCallParams);
-                })
-                .then((oneCallResponse) => {
-                    // la seconda API call è ok, ho le previsioni
-                    // console.log('SUCCESS 2nd axios call');
-                    this.loading = false; // disattivo la progress bar
-                    this.forecastsAvailable = true; // ho disponibili i dati delle previsioni
+                    axios
+                        .get(BASE_URL + EP_ONECALL + oneCallParams)
+                        .then((oneCallResponse) => {
+                            // la seconda API call è ok, ho le previsioni
+                            // console.log('SUCCESS 2nd axios call');
+                            this.loading = false; // disattivo la progress bar
+                            this.forecastsAvailable = true; // ho disponibili i dati delle previsioni
 
-                    // ho tutti i dati da visualizzare in oneCallResponse
-                    this.extractOnecallData(oneCallResponse.data);
+                            // ho tutti i dati da visualizzare in oneCallResponse
+                            this.extractOnecallData(oneCallResponse.data);
+                        })
+                        .catch((error) => {
+                            console.log('error', error);
+
+                            this.loading = false; // disattivo la progress bar
+                            // problemi a recuperare le previsioni (oneCall endpoint)
+                            this.hint = 'INFO: previsioni non disponibili!';
+                        });
                 })
                 .catch((error) => {
+                    console.log('error', error);
+                    // console.log('ERROR 2nd axios call failed');
                     this.loading = false; // disattivo la progress bar
-                    this.handleError(error);
+                    // località non trovata (weather endpoint)
+                    this.hint = 'Località non trovata!';
+                    this.forecastsAvailable = false;
                 });
         },
 
@@ -486,26 +498,26 @@ export default {
             // console.log('forecasts:', this.forecasts);
         },
 
-        handleError(error) {
-            // DESCRIZIONE:
-            // gestisce i 2 casi a seconda che fallisca la 1a o la 2a chiamata API
-            // NOTA: se la 1a fallisce la 2a non viene neanche effettuata
-            // in base a cioò che contiene l'url, stbilisco quale chiamata ha generato errore
+        // handleError(error) {
+        //     // DESCRIZIONE:
+        //     // gestisce i 2 casi a seconda che fallisca la 1a o la 2a chiamata API
+        //     // NOTA: se la 1a fallisce la 2a non viene neanche effettuata
+        //     // in base a cioò che contiene l'url, stbilisco quale chiamata ha generato errore
 
-            // console.log('error.config', error.config);
-            // console.log('error.config.url', error.config.url);
+        //     // console.log('error.config', error.config);
+        //     // console.log('error.config.url', error.config.url);
 
-            // console.log('ERROR an axios call failed');
+        //     // console.log('ERROR an axios call failed');
 
-            if (error.config.url.includes('/weather?')) {
-                // località non trovata (weather endpoint)
-                this.hint = 'Località non trovata!';
-            } else {
-                // problemi a recuperare le previsioni (oneCall endpoint)
-                this.hint = 'ATTENZIONE: previsioni non disponibili!';
-                this.forecastsAvailable = false;
-            }
-        },
+        //     if (error.config.url.includes('/weather?')) {
+        //         // località non trovata (weather endpoint)
+        //         this.hint = 'Località non trovata!';
+        //     } else {
+        //         // problemi a recuperare le previsioni (oneCall endpoint)
+        //         this.hint = 'ATTENZIONE: previsioni non disponibili!';
+        //         this.forecastsAvailable = false;
+        //     }
+        // },
     },
 };
 </script>
