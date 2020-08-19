@@ -2,17 +2,21 @@
     <v-layout column justify-center align-center>
         <v-flex>
             <v-card color="cyan lighten-5">
-                <v-card-title class="headline text-center">
+                <v-card-title class="headline justify-center">
                     <span
                         ><v-icon size="30" color="#d50000"
                             >mdi-alert-circle-outline</v-icon
                         ></span
-                    >&nbsp; Attenzione
+                    >Attenzione
                 </v-card-title>
                 <v-card-text>
                     <h1 v-if="error.statusCode === 404" class="text-center">
-                        Errore 404 <br />
-                        {{ pageNotFound }}
+                        <img
+                            style="max-width: 100%;"
+                            class=""
+                            src="@/assets/images/error404.png"
+                            alt="computer 404 img"
+                        />
                     </h1>
                     <h1 v-else>
                         {{ otherError }}
