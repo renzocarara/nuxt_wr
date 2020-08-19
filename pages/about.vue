@@ -10,7 +10,7 @@
                     >&nbsp; Informazioni
                 </v-card-title>
                 <v-card-text>
-                    <h5>SCOPO</h5>
+                    <h4>SCOPO</h4>
                     <p>
                         Questa applicazione è un esercizio sull'utilizzo del
                         framework
@@ -21,7 +21,7 @@
                             >Nuxt.js
                         </a>
                     </p>
-                    <h5>FUNZIONAMENTO</h5>
+                    <h4>FUNZIONAMENTO</h4>
                     <p>
                         Permette di ricercare informazioni meteo e previsioni su
                         più di 200.000 località nel mondo.<br />
@@ -33,7 +33,7 @@
                             >OpenWeatherMap</a
                         >. Le API vengono chiamate tramite axios.
                     </p>
-                    <h5>UTILIZZO</h5>
+                    <h4>UTILIZZO</h4>
                     <p>
                         E' necessario inserire il nome di una località da
                         ricercare.<br />
@@ -60,7 +60,7 @@
                         <li>10156 (corrisponde a New York)</li>
                     </ul>
                     <br />
-                    <h5>TECNOLOGIE</h5>
+                    <h4>TECNOLOGIE</h4>
                     <ul>
                         <li>NUXT.JS</li>
                         <li>VUE.JS</li>
@@ -68,7 +68,7 @@
                         <li>AXIOS</li>
                     </ul>
                     <br />
-                    <h5>CREDITS</h5>
+                    <h4>CREDITS</h4>
                     <p>
                         Dati meteo
                         <br />
@@ -158,7 +158,11 @@ export default {
 .vert-align-sub {
     vertical-align: sub;
 }
-h5 {
+h4 {
     color: $secondary-color;
+}
+p,
+ul {
+    font-size: 16px;
 }
 </style>

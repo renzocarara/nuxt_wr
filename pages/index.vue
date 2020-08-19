@@ -9,7 +9,7 @@
                     <div class="text-center">
                         <weather-logo-animation />
                     </div>
-                    <p>
+                    <p class="text-subtitle-1">
                         Ottieni informazioni meteorologiche e previsioni su più
                         di 200.000 località nel mondo.
                     </p>

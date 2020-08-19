@@ -4,14 +4,17 @@
             <v-card class="mx-auto" max-width="400" color="cyan lighten-5">
                 <!-- Search Bar -->
                 <v-text-field
+                    id="place-input"
                     v-model="place"
-                    class="px-10 py-10"
-                    placeholder="Inserisci una località..."
+                    class="px-10 py-10 size"
+                    placeholder="Inserisci la località..."
                     clearable
                     persistent-hint
                     :label="label"
                     :hint="hint"
                     :loading="loading"
+                    loader-height="3"
+                    :error="error"
                     append-icon="mdi-magnify"
                     @click:append="handleSearch"
                     @keypress.13="handleSearch"
@@ -42,7 +45,7 @@
                                 /><img /> <strong>{{ currentData.city }}</strong
                                 >, {{ currentData.country }}
                             </v-list-item-title>
-                            <v-list-item-subtitle
+                            <v-list-item-subtitle class="text-subtitle-1"
                                 >{{ currentData.dt }}
                             </v-list-item-subtitle>
                             <v-list-item-subtitle>
@@ -53,19 +56,19 @@
                         </v-list-item-content>
                     </v-list-item>
 
-                    <v-card-text>
+                    <v-card-text class="py-0">
                         <v-row align="center">
                             <v-col class="text-right" cols="6">
                                 <span class="display-1"
                                     ><v-icon>mdi-thermometer</v-icon
                                     >{{ currentData.temp }}&deg;C</span
                                 ><br />
-                                <span class="text-subtitle-2 grey--text"
+                                <span class="text-subtitle-1 grey--text"
                                     >percepita
                                     {{ currentData.feelsLike }}&deg;C</span
                                 >
                             </v-col>
-                            <v-col cols="6" class="">
+                            <v-col cols="6" class="py-0">
                                 <v-img
                                     :class="
                                         currentData.iconCode == '01d'
@@ -74,7 +77,7 @@
                                     "
                                     :src="currentData.iconPath"
                                     alt="weather icon"
-                                    width="92"
+                                    width="102"
                                 ></v-img>
                             </v-col>
                         </v-row>
@@ -82,33 +85,33 @@
 
                     <v-list-item>
                         <v-list-item-content>
-                            <v-list-item-subtitle
+                            <v-list-item-subtitle class="text-subtitle-1"
                                 ><v-icon>mdi-weather-windy</v-icon
-                                >&nbsp;velocità
-                                {{ currentData.windSpeed }}&nbsp;
+                                >&nbsp;velocità {{ currentData.windSpeed
+                                }}<br />
                                 <v-icon>mdi-compass-outline</v-icon
                                 >&nbsp;direzione
                                 {{ currentData.windDeg }}</v-list-item-subtitle
                             >
 
-                            <v-list-item-subtitle
+                            <v-list-item-subtitle class="text-subtitle-1"
                                 ><v-icon>mdi-water-percent</v-icon>&nbsp;umidità
                                 {{ currentData.humidity }}</v-list-item-subtitle
                             >
 
-                            <v-list-item-subtitle
+                            <v-list-item-subtitle class="text-subtitle-1"
                                 ><v-icon>mdi-format-line-weight</v-icon
                                 >&nbsp;pressione
                                 {{ currentData.pressure }}</v-list-item-subtitle
                             >
 
-                            <v-list-item-subtitle
+                            <v-list-item-subtitle class="text-subtitle-1"
                                 ><v-icon>mdi-weather-sunset-up</v-icon>&nbsp;il
                                 sole sorge alle
                                 {{ currentData.sunrise }}
                             </v-list-item-subtitle>
 
-                            <v-list-item-subtitle
+                            <v-list-item-subtitle class="text-subtitle-1"
                                 ><v-icon>mdi-weather-sunset-down</v-icon
                                 >&nbsp;il sole tramonta alle
                                 {{ currentData.sunset }}
@@ -155,13 +158,13 @@
 
                                         <v-list-item-subtitle class="">
                                             <span
-                                                class="text-subtitle-2 blue--text"
+                                                class="text-subtitle-1 blue--text"
                                                 >{{
                                                     forecast.tempMin
                                                 }}&nbsp;&nbsp;
                                             </span>
                                             <span
-                                                class="text-subtitle-2 red--text"
+                                                class="text-subtitle-1 red--text"
                                             >
                                                 {{ forecast.tempMax }}</span
                                             >
@@ -173,12 +176,14 @@
                                     color="cyan lighten-4"
                                     class="pt-5"
                                 >
-                                    <h5>
+                                    <h4>
                                         <strong>{{ forecast.date }}</strong>
-                                    </h5>
+                                    </h4>
                                     <v-list-item>
                                         <v-list-item-content>
-                                            <v-list-item-subtitle>
+                                            <v-list-item-subtitle
+                                                class="text-subtitle-1"
+                                            >
                                                 <v-icon
                                                     >mdi-text-box-outline</v-icon
                                                 >&nbsp;
@@ -186,6 +191,7 @@
                                             </v-list-item-subtitle>
 
                                             <v-list-item-subtitle
+                                                class="text-subtitle-1"
                                                 ><v-icon
                                                     >mdi-weather-windy</v-icon
                                                 >&nbsp;
@@ -201,6 +207,7 @@
                                             >
 
                                             <v-list-item-subtitle
+                                                class="text-subtitle-1"
                                                 ><v-icon
                                                     >mdi-water-percent</v-icon
                                                 >&nbsp; {{ forecast.humidity }}
@@ -211,33 +218,38 @@
                                             </v-list-item-subtitle>
 
                                             <v-list-item-subtitle
+                                                class="text-subtitle-1"
                                                 ><v-icon>mdi-sunglasses</v-icon
                                                 >&nbsp;&nbsp;UVI (ore 12.00)
                                                 {{ forecast.uvi }}
                                             </v-list-item-subtitle>
 
                                             <v-list-item-subtitle
+                                                class="text-subtitle-1"
                                                 ><v-icon
                                                     >mdi-weather-sunset-up</v-icon
                                                 >&nbsp;alba
                                                 {{ forecast.sunrise }}
-                                                &nbsp;&nbsp;
+                                                <br />
                                                 <v-icon
                                                     >mdi-weather-sunset-down</v-icon
                                                 >&nbsp;tramonto
                                                 {{ forecast.sunset }}
                                             </v-list-item-subtitle>
 
-                                            <v-list-item-subtitle>
+                                            <v-list-item-subtitle
+                                                class="text-subtitle-1"
+                                            >
                                                 <v-icon
                                                     >mdi-umbrella-outline</v-icon
                                                 >&nbsp;probabilità
                                                 {{ forecast.pop }}
+                                                <br />
                                                 <span
                                                     v-if="forecast.pop != '0%'"
-                                                    >&nbsp;&nbsp;<v-icon
-                                                        >mdi-water-outline</v-icon
-                                                    >{{ forecast.rain }}</span
+                                                    >&nbsp;&nbsp;<v-icon>mdi-water-outline</v-icon>&nbsp;quantità&nbsp;{{
+                                                        forecast.rain
+                                                    }}</span
                                                 >
                                             </v-list-item-subtitle>
                                         </v-list-item-content>
@@ -277,6 +289,7 @@ export default {
             label: 'Località',
             hint: 'es. "roma,it" (lo stato è opzionale)',
             loading: false,
+            error: false,
 
             // esiti chiamate API
             currentDataAvailable: false,
@@ -349,32 +362,24 @@ export default {
                         METRIC +
                         '&exclude=minutely,hourly';
 
-                    axios
-                        .get(BASE_URL + EP_ONECALL + oneCallParams)
-                        .then((oneCallResponse) => {
-                            // la seconda API call è ok, ho le previsioni
-                            // console.log('SUCCESS 2nd axios call');
-                            this.loading = false; // disattivo la progress bar
-                            this.forecastsAvailable = true; // ho disponibili i dati delle previsioni
-
-                            // ho tutti i dati da visualizzare in oneCallResponse
-                            this.extractOnecallData(oneCallResponse.data);
-                        })
-                        .catch((error) => {
-                            console.log('error', error);
-
-                            this.loading = false; // disattivo la progress bar
-                            // problemi a recuperare le previsioni (oneCall endpoint)
-                            this.hint = 'INFO: previsioni non disponibili!';
-                        });
+                    return axios.get(BASE_URL + EP_ONECALL + oneCallParams);
                 })
+                .then((oneCallResponse) => {
+                    // la seconda API call è ok, ho le previsioni
+                    // console.log('SUCCESS 2nd axios call');
+                    this.loading = false; // disattivo la progress bar
+                    this.error = false; // disattivo la condizione di errore
+                    this.forecastsAvailable = true; // ho disponibili i dati delle previsioni
+
+                    // ho tutti i dati da visualizzare in oneCallResponse
+                    this.extractOnecallData(oneCallResponse.data);
+                })
+
                 .catch((error) => {
                     console.log('error', error);
-                    // console.log('ERROR 2nd axios call failed');
                     this.loading = false; // disattivo la progress bar
-                    // località non trovata (weather endpoint)
-                    this.hint = 'Località non trovata!';
-                    this.forecastsAvailable = false;
+                    this.error = true; // attivo la condizione di errore
+                    this.handleError(error);
                 });
         },
 
@@ -498,26 +503,27 @@ export default {
             // console.log('forecasts:', this.forecasts);
         },
 
-        // handleError(error) {
-        //     // DESCRIZIONE:
-        //     // gestisce i 2 casi a seconda che fallisca la 1a o la 2a chiamata API
-        //     // NOTA: se la 1a fallisce la 2a non viene neanche effettuata
-        //     // in base a cioò che contiene l'url, stbilisco quale chiamata ha generato errore
+        handleError(error) {
+            // DESCRIZIONE:
+            // gestisce i 2 casi a seconda che fallisca la 1a o la 2a chiamata API
+            // NOTA: se la 1a fallisce la 2a non viene neanche effettuata
+            // in base a ciò che contiene l'url, stbilisco quale chiamata ha generato errore
+            // console.log('ERROR an axios call failed');
 
-        //     // console.log('error.config', error.config);
-        //     // console.log('error.config.url', error.config.url);
-
-        //     // console.log('ERROR an axios call failed');
-
-        //     if (error.config.url.includes('/weather?')) {
-        //         // località non trovata (weather endpoint)
-        //         this.hint = 'Località non trovata!';
-        //     } else {
-        //         // problemi a recuperare le previsioni (oneCall endpoint)
-        //         this.hint = 'ATTENZIONE: previsioni non disponibili!';
-        //         this.forecastsAvailable = false;
-        //     }
-        // },
+            if (error.config.url.includes('/weather?')) {
+                // è fallita la 1a chiamata axios (weather endpoint)
+                if (error.response.status === 404) {
+                    // località non trovata (weather endpoint)
+                    this.hint = 'Località non trovata!';
+                } else {
+                    this.hint = 'Si è verificato un errore!';
+                }
+            } else {
+                // problemi a recuperare le previsioni (oneCall endpoint)
+                this.hint = 'ATTENZIONE: previsioni non disponibili!';
+                this.forecastsAvailable = false;
+            }
+        },
     },
 };
 </script>
@@ -551,5 +557,18 @@ export default {
     background-color: $cyan-lighten-3;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+}
+
+// text-field text
+::v-deep #place-input {
+    font-size: 18px;
+}
+// text-field label
+::v-deep .v-label {
+    font-size: 20px;
+}
+// text field hint
+::v-deep .v-messages {
+    font-size: 14px;
 }
 </style>
