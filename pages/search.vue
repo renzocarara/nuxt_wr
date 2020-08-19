@@ -367,7 +367,7 @@ export default {
                 .then((oneCallResponse) => {
                     // la seconda API call è ok, ho le previsioni
                     // console.log('SUCCESS 2nd axios call');
-                    this.loading = false; // disattivo la progress bar
+                    // this.loading = false; // disattivo la progress bar
                     this.error = false; // disattivo la condizione di errore
                     this.forecastsAvailable = true; // ho disponibili i dati delle previsioni
 
@@ -377,9 +377,12 @@ export default {
 
                 .catch((error) => {
                     console.log('error', error);
-                    this.loading = false; // disattivo la progress bar
+                    // this.loading = false; // disattivo la progress bar
                     this.error = true; // attivo la condizione di errore
                     this.handleError(error);
+                })
+                .finally(() => {
+                    this.loading = false; // disattivo la progress bar
                 });
         },
 
