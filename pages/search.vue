@@ -6,7 +6,7 @@
                 <v-text-field
                     id="place-input"
                     v-model="place"
-                    class="px-10 py-10 size"
+                    class="px-10 pt-10 pb-5"
                     placeholder="Inserisci la località..."
                     clearable
                     persistent-hint
@@ -16,14 +16,26 @@
                     loader-height="3"
                     :error="error"
                     append-icon="mdi-magnify"
-                    @click:append="handleSearch"
-                    @keypress.13="handleSearch"
+                    @click:append="checkInput"
+                    @keypress.13="checkInput"
                 ></v-text-field>
+                <!-- @click:append="handleSearch" -->
 
                 <!-- contenitore di tutti i dati da visualizzare in pagina (correnti e previsioni) -->
                 <div v-if="currentDataAvailable">
+                    <!-- <v-checkbox
+                        v-model="isPreferredPlace"
+                        dense
+                        color="#d50000"
+                        off-icon="mdi-star-outline"
+                        on-icon="mdi-star"
+                        hide-details="true"
+                        class="px-9 my-0 preferred-place"
+                        :label="`Imposta come preferita ${isPreferredPlace.toString()}`"
+                    ></v-checkbox> -->
+
                     <v-list-item three-line>
-                        <v-list-item-content>
+                        <v-list-item-content class="pt-0">
                             <v-list-item-subtitle>
                                 <v-icon>mdi-crosshairs-gps</v-icon>
                                 <span class="text-caption"
@@ -44,6 +56,17 @@
                                 flag"
                                 /><img /> <strong>{{ currentData.city }}</strong
                                 >, {{ currentData.country }}
+                                <v-checkbox
+                                    v-if="browserHasStorage"
+                                    v-model="isPreferredPlace"
+                                    dense
+                                    color="#d50000"
+                                    off-icon="mdi-star-outline"
+                                    on-icon="mdi-star"
+                                    hide-details="true"
+                                    class="d-inline-block my-0 preferred-place"
+                                    @change="updateStorage"
+                                ></v-checkbox>
                             </v-list-item-title>
                             <v-list-item-subtitle class="text-subtitle-1"
                                 >{{ currentData.dt }}
@@ -289,7 +312,12 @@ export default {
             label: 'Località',
             hint: 'es. "roma,it" (lo stato è opzionale)',
             loading: false,
-            error: false,
+            error: false, // quando a true applica il colore rosso alla text-field input
+
+            // flag per verificare se il browser supporta Web Storage
+            browserHasStorage: false,
+            // checkbox per selezione località preferita
+            isPreferredPlace: false,
 
             // esiti chiamate API
             currentDataAvailable: false,
@@ -306,25 +334,71 @@ export default {
         };
     },
 
+    mounted() {
+        // DESCRIZIONE:
+        // se la località preferita è definita (cioè salvata nel LocalStorage), al caricamento (mount) del componente "Search",
+        // viene fatta partire la chiamata axios per recuperare i dati della località preferita per poi presentarli all'utente
+        // i dati vengono presentati all'utente automaticamente, senza che sia stata fatta una ricerca
+
+        if (
+            // controllo che il browser supporti Web Storage, che il dato esista e sia diverso da stringa vuota
+            // nel qual caso recupero i dati della località preferita, chiamando la handleSearch()
+            this.browserHasStorage &&
+            localStorage.getItem('morganaPreferredPlace') !== null &&
+            localStorage.getItem('morganaPreferredPlace') !== ''
+        ) {
+            console.log('handleSearch by ID, called!');
+            const by = 'id'; // call API weather by City Id
+            this.handleSearch(by);
+        }
+    },
+
+    created() {
+        // DESCRIZIONE:
+        // al momento della creazione del componnte verifico se il browser in uso supporta Web Storage,
+        // e setto un flag per indicarlo
+        if (typeof Storage !== 'undefined') {
+            this.browserHasStorage = true;
+            console.log('BROWSER supporta Storage!!');
+        }
+    },
+
     methods: {
-        handleSearch() {
+        checkInput() {
+            // DESCRIZIONE:
+            // banalmente controlla che l'input cercato non sia nullo (vuoto) o soli blanks
+            // stringhe con blanks iniziali o finali vengono "trimmate" e poi passate alla funzione di ricerca
+
+            if (this.place.trim() !== '') {
+                const by = 'q'; // call API weather by City Name
+                this.handleSearch(by);
+            }
+        },
+
+        handleSearch(by) {
             // DESCRIZIONE:
             // vengono effettuate 2 chiamate API usando axios in sequenza, la 2a dipende da alcuni dati (lat e lon)
-            //  recuperati dalla 1a. Se la 1a chiamata fallisce, le seconda non viene effettuata.
+            // recuperati dalla 1a. Se la 1a chiamata fallisce, le seconda non viene effettuata.
             // La 1a chiamata recupera i dari correnti della località selezionata (temperatura, vento, pressione,...)
             // La seconda serve per recuperare sostanzialmente le previsioni,
             // se questa seconda chiamata non dà esito positivo, i dati recuperati con la 1a chiamata
-            // vengono comunque visualizzati.
+            // vengono comunque visualizzati, ma le previsioni non saranno disponibili
 
-            hideVirtualKeyboard();
+            hideVirtualKeyboard(); // nascondo la keybord su mobile
 
             this.loading = true; // attivo la progress bar
             this.openedPanel = null; // chiudo eventuali pannelli dell'accordion aperti
+            this.isPreferredPlace = false; // setto il checkbox (stellina) come "non selezionato"
 
-            // località ricercata + api key + lingua + unità di misura
+            // stabilisco il tipo di ricerca, se per nome (che arriva dalla SearchBar) o per ID (che arriva da LocalStorage)
+            const searchBy =
+                by === 'q'
+                    ? '?q=' + this.place
+                    : '?id=' + localStorage.getItem('morganaPreferredPlace');
+
+            // località ricercata (per ID o per nome) + api key + lingua + unità di misura
             const weatherParams =
-                '?q=' +
-                this.place +
+                searchBy +
                 '&appid=' +
                 APPID +
                 '&lang=' +
@@ -346,6 +420,8 @@ export default {
 
                     // la prima API call è ok, estraggo i dati dalla response
                     this.extractWeatherData(response.data);
+
+                    this.isPreferredPlace = this.verifyPreferred(); // verifico se la località è quella "preferred"
 
                     // preparo i parametri per la 2a API call
                     // località ricercata + api key + lingua + unità di misura + esclusioni
@@ -386,6 +462,46 @@ export default {
                 });
         },
 
+        verifyPreferred() {
+            // DESCRIZIONE:
+            // ritorna vero se la località appena ricercata è quella salvata come preferita in  localStorage
+            // altrimenti ritorna falso
+            // Nota: l'id memorizzato in LocalStorage è una "stringa", mentre l'id che arriva dalla API è un "numero"
+            // Nota2: se la chiave non è impostata(cioè definita nello Storage), getItem() restituisce "NULL"
+
+            // console.log('this.currentData.id:', this.currentData.id);
+            // console.log(
+            // 'PreferredPlace stored:',
+            // localStorage.getItem('morganaPreferredPlace')
+            // );
+            return (
+                this.currentData.id.toString() ===
+                localStorage.getItem('morganaPreferredPlace')
+            );
+        },
+        updateStorage() {
+            // DESCRIZIONE:
+            // viene chiamata quando c'e' un click/tap sulla checkbox che indica la località preferita
+            // aggiorna il valore della  località preferita in localStorage,
+            // se la località era selezionata e viene deselezionata, in localStorage viene salvata una stringa vuota
+
+            if (this.isPreferredPlace) {
+                // salvo la preferenza in LocalStorage
+                localStorage.setItem(
+                    'morganaPreferredPlace',
+                    this.currentData.id
+                );
+                console.log(
+                    'preferenza:',
+                    localStorage.getItem('morganaPreferredPlace')
+                );
+            } else {
+                // preferenza deselezionata, resetto il dato in LocalStorage
+                localStorage.setItem('morganaPreferredPlace', '');
+                console.log('nessuna preferenza salvata!');
+            }
+        },
+
         extractWeatherData(data) {
             // DESCRIZIONE:
             // valorizza l'oggetto "currentData" (meteo corrente) in data() con i dati ricevuti dalle API
@@ -393,6 +509,7 @@ export default {
             this.currentData.lat = data.coord.lat;
             this.currentData.lon = data.coord.lon;
             this.currentData.city = data.name;
+            this.currentData.id = data.id; // city id
             this.currentData.country = data.sys.country;
 
             this.currentData.flag = require('../assets/images/flags/' +
@@ -567,11 +684,14 @@ export default {
     font-size: 18px;
 }
 // text-field label
-::v-deep .v-label {
+::v-deep .v-text-field .v-label {
     font-size: 20px;
 }
 // text field hint
 ::v-deep .v-messages {
     font-size: 14px;
+}
+::v-deep .preferred-place .v-label {
+    font-size: 12px;
 }
 </style>
