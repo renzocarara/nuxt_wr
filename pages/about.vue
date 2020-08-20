@@ -69,10 +69,10 @@
                     <br />
                     <h4>TECNOLOGIE</h4>
                     <ul>
-                        <li>NUXT.JS</li>
-                        <li>VUE.JS</li>
-                        <li>VUETIFY</li>
-                        <li>AXIOS</li>
+                        <li>NUXT.JS v2.14.1</li>
+                        <li>VUE.JS v2.6.11</li>
+                        <li>VUETIFY v2.3.7</li>
+                        <li>AXIOS v0.19.2</li>
                     </ul>
                     <br />
                     <h4>CREDITS</h4>

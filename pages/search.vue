@@ -36,7 +36,6 @@
                             <!-- bandiera, nome località, codice stato -->
                             <v-list-item-title class="headline text-wrap">
                                 <img
-                                    style="width: 30px;"
                                     class="d-inline-block flag"
                                     :src="
                                         currentData.flag
@@ -254,8 +253,72 @@
                                             <v-list-item-subtitle
                                                 class="text-subtitle-1"
                                                 ><v-icon>mdi-sunglasses</v-icon
-                                                >&nbsp;&nbsp;UVI (ore 12.00)
-                                                {{ forecast.uvi }}
+                                                >&nbsp;&nbsp;UVI
+                                                <v-chip
+                                                    class="uvi-button"
+                                                    small
+                                                    :color="forecast.uvicolor"
+                                                    >{{ forecast.uvi }}</v-chip
+                                                >&nbsp;&nbsp;
+
+                                                <!-- bottoncino "informazioni" su UVI -->
+                                                <!-- color="red accent-4" -->
+                                                <v-btn
+                                                    color="cyan lighten-4"
+                                                    class="px-0"
+                                                    elevation="5"
+                                                    x-small
+                                                    @click.stop="dialog = true"
+                                                >
+                                                    <v-icon class="info-icon"
+                                                        >mdi-information-variant</v-icon
+                                                    >
+                                                </v-btn>
+                                                <v-dialog
+                                                    v-model="dialog"
+                                                    max-width="290"
+                                                >
+                                                    <v-card
+                                                        color="cyan lighten-5"
+                                                    >
+                                                        <v-card-title
+                                                            class="headline"
+                                                            >Indice UV
+                                                        </v-card-title>
+
+                                                        <v-card-text>
+                                                            <v-img
+                                                                :src="
+                                                                    require('../assets/images/uvipanel.png')
+                                                                "
+                                                                alt="indici UV"
+                                                            ></v-img>
+                                                        </v-card-text>
+
+                                                        <v-card-actions>
+                                                            <v-spacer></v-spacer>
+
+                                                            <v-btn
+                                                                color="red accent-4"
+                                                                dark
+                                                                target="_blank"
+                                                                href="https://www.melanomaitalia.org/trova-le-risposte/prevenzione/le-radiazioni-ultraviolette/indice-ultravioletto/#:~:text=L'indice%20predice%20il%20rischio,%2B%20(rischio%20molto%20alto).&text=Indice%20UV%203%2D5%3A%20significa,in%20meno%20di%2020%20minuti."
+                                                            >
+                                                                Ulteriori Info
+                                                            </v-btn>
+
+                                                            <v-btn
+                                                                color="red accent-4"
+                                                                dark
+                                                                @click="
+                                                                    dialog = false
+                                                                "
+                                                            >
+                                                                Chiudi
+                                                            </v-btn>
+                                                        </v-card-actions>
+                                                    </v-card>
+                                                </v-dialog>
                                             </v-list-item-subtitle>
 
                                             <v-list-item-subtitle
@@ -347,6 +410,9 @@ export default {
 
             // accordion opened panels
             openedPanel: null,
+
+            // info dialog UVI
+            dialog: false,
         };
     },
 
@@ -358,14 +424,14 @@ export default {
 
         if (
             // controllo che il browser supporti Web Storage, che il dato esista e sia diverso da stringa vuota
-            // nel qual caso recupero i dati della località preferita, chiamando la handleSearch()
+            // nel qual caso recupero i dati della località preferita, chiamando la getApiData()
             this.browserHasStorage &&
             localStorage.getItem('morganaPreferredPlace') !== null &&
             localStorage.getItem('morganaPreferredPlace') !== ''
         ) {
-            // console.log('handleSearch by ID, called!');
+            // console.log('getApiData by ID, called!');
             const by = 'id';
-            this.handleSearch(by); // call API weather by City Id
+            this.getApiData(by); // call API weather by City Id
         }
     },
 
@@ -387,11 +453,11 @@ export default {
 
             if (this.place.trim() !== '') {
                 const by = 'q'; // call API weather by City Name
-                this.handleSearch(by);
+                this.getApiData(by);
             }
         },
 
-        handleSearch(by) {
+        getApiData(by) {
             // DESCRIZIONE:
             // vengono effettuate 2 chiamate API usando axios in sequenza, la 2a dipende da alcuni dati (lat e lon)
             // recuperati dalla 1a. Se la 1a chiamata fallisce, le seconda non viene effettuata.
@@ -612,7 +678,8 @@ export default {
                     // tempEvening: Math.round(data.daily[i].temp.eve) + '\xB0',
                     // tempNight: Math.round(data.daily[i].temp.night) + '\xB0',
 
-                    uvi: data.daily[i].uvi,
+                    uvi: data.daily[i].uvi.toFixed(2),
+                    uvicolor: this.setUviColor(data.daily[i].uvi),
 
                     sunrise: moment
                         .utc(
@@ -641,6 +708,33 @@ export default {
                 this.forecasts.push(forecastObj);
             }
             // console.log('forecasts:', this.forecasts);
+        },
+
+        setUviColor(uviIndex) {
+            let uviColor = '';
+            uviIndex = Math.round(uviIndex);
+            console.log('uvIndex rounded:', uviIndex);
+            if (uviIndex <= 2) {
+                // BASSO
+                uviColor = 'green';
+            } else if (uviIndex <= 5) {
+                // MODERATO
+                uviColor = 'yellow';
+            } else if (uviIndex <= 7) {
+                // ALTO
+                uviColor = 'orange';
+            } else if (uviIndex <= 10) {
+                // MOLTO ALTO
+                uviColor = 'red';
+            } else {
+                uviColor = 'purple'; // ESTREMO
+            }
+
+            return uviColor;
+        },
+
+        uviInfos() {
+            console.log('uviInfos called!');
         },
 
         handleError(error) {
@@ -673,6 +767,7 @@ export default {
 // bandierina stato
 .flag {
     vertical-align: middle;
+    width: 30px;
 }
 
 // ombra per tutte le icone tranne il sole
@@ -729,6 +824,13 @@ export default {
 ::v-deep .v-snack__content {
     text-align: center;
     font-weight: bold;
-    font-size: 16px;
+    font-size: 14px;
+}
+.uvi-button {
+    font-weight: bold;
+    font-size: 14px;
+}
+.info-icon {
+    font-size: 22px;
 }
 </style>
