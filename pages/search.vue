@@ -19,23 +19,12 @@
                     @click:append="checkInput"
                     @keypress.13="checkInput"
                 ></v-text-field>
-                <!-- @click:append="handleSearch" -->
 
                 <!-- contenitore di tutti i dati da visualizzare in pagina (correnti e previsioni) -->
                 <div v-if="currentDataAvailable">
-                    <!-- <v-checkbox
-                        v-model="isPreferredPlace"
-                        dense
-                        color="#d50000"
-                        off-icon="mdi-star-outline"
-                        on-icon="mdi-star"
-                        hide-details="true"
-                        class="px-9 my-0 preferred-place"
-                        :label="`Imposta come preferita ${isPreferredPlace.toString()}`"
-                    ></v-checkbox> -->
-
                     <v-list-item three-line>
                         <v-list-item-content class="pt-0">
+                            <!-- latitudine e longitudine -->
                             <v-list-item-subtitle>
                                 <v-icon>mdi-crosshairs-gps</v-icon>
                                 <span class="text-caption"
@@ -43,6 +32,8 @@
                                     {{ currentData.lon }}&deg;</span
                                 >
                             </v-list-item-subtitle>
+
+                            <!-- bandiera, nome località, codice stato -->
                             <v-list-item-title class="headline text-wrap">
                                 <img
                                     style="width: 30px;"
@@ -56,21 +47,38 @@
                                 flag"
                                 /><img /> <strong>{{ currentData.city }}</strong
                                 >, {{ currentData.country }}
+
+                                <!-- stellina per settare/resettare la località preferita -->
                                 <v-checkbox
                                     v-if="browserHasStorage"
                                     v-model="isPreferredPlace"
                                     dense
-                                    color="#d50000"
+                                    color="red accent-4"
                                     off-icon="mdi-star-outline"
                                     on-icon="mdi-star"
                                     hide-details="true"
-                                    class="d-inline-block my-0 preferred-place"
+                                    class="d-inline-block my-0"
                                     @change="updateStorage"
                                 ></v-checkbox>
+
+                                <!-- snackbar di avviso quando viene checkata/uncheckata la stellina -->
+                                <v-snackbar
+                                    v-model="snackbar"
+                                    :timeout="timeout"
+                                    color="red accent-4"
+                                    centered
+                                    elevation="10"
+                                >
+                                    {{ snackText }}
+                                </v-snackbar>
                             </v-list-item-title>
+
+                            <!-- data: weekday, gg mm aa hh:mm -->
                             <v-list-item-subtitle class="text-subtitle-1"
                                 >{{ currentData.dt }}
                             </v-list-item-subtitle>
+
+                            <!-- descrizione del meteo corrente -->
                             <v-list-item-subtitle>
                                 <strong class="text-h5">{{
                                     currentData.description
@@ -158,6 +166,7 @@
                                 :key="i"
                                 class=""
                             >
+                                <!-- header: weekday, iconcina meteo, temp min e temp max -->
                                 <v-expansion-panel-header
                                     class="py-0 pl-0 pr-4 text-center forecast-header"
                                 >
@@ -195,10 +204,12 @@
                                     </v-list-item>
                                 </v-expansion-panel-header>
 
+                                <!-- dettagli previsioni del sinolo giorno -->
                                 <v-expansion-panel-content
                                     color="cyan lighten-4"
                                     class="pt-5"
                                 >
+                                    <!-- gg mm aaaa -->
                                     <h4>
                                         <strong>{{ forecast.date }}</strong>
                                     </h4>
@@ -319,6 +330,11 @@ export default {
             // checkbox per selezione località preferita
             isPreferredPlace: false,
 
+            // snackbar di avviso località preferita
+            snackbar: false,
+            snackText: '',
+            timeout: 2000,
+
             // esiti chiamate API
             currentDataAvailable: false,
             forecastsAvailable: true,
@@ -347,9 +363,9 @@ export default {
             localStorage.getItem('morganaPreferredPlace') !== null &&
             localStorage.getItem('morganaPreferredPlace') !== ''
         ) {
-            console.log('handleSearch by ID, called!');
-            const by = 'id'; // call API weather by City Id
-            this.handleSearch(by);
+            // console.log('handleSearch by ID, called!');
+            const by = 'id';
+            this.handleSearch(by); // call API weather by City Id
         }
     },
 
@@ -464,16 +480,11 @@ export default {
 
         verifyPreferred() {
             // DESCRIZIONE:
-            // ritorna vero se la località appena ricercata è quella salvata come preferita in  localStorage
+            // ritorna vero se la località appena ricercata è quella salvata come preferita in localStorage
             // altrimenti ritorna falso
-            // Nota: l'id memorizzato in LocalStorage è una "stringa", mentre l'id che arriva dalla API è un "numero"
+            // Nota: l'id memorizzato in localStorage è una "stringa", mentre l'id che arriva dalla API è un "numero"
             // Nota2: se la chiave non è impostata(cioè definita nello Storage), getItem() restituisce "NULL"
 
-            // console.log('this.currentData.id:', this.currentData.id);
-            // console.log(
-            // 'PreferredPlace stored:',
-            // localStorage.getItem('morganaPreferredPlace')
-            // );
             return (
                 this.currentData.id.toString() ===
                 localStorage.getItem('morganaPreferredPlace')
@@ -485,20 +496,29 @@ export default {
             // aggiorna il valore della  località preferita in localStorage,
             // se la località era selezionata e viene deselezionata, in localStorage viene salvata una stringa vuota
 
+            this.snackbar = true; // rendo visibile lo snackbar di avviso
+
             if (this.isPreferredPlace) {
                 // salvo la preferenza in LocalStorage
                 localStorage.setItem(
                     'morganaPreferredPlace',
                     this.currentData.id
                 );
+
                 console.log(
                     'preferenza:',
                     localStorage.getItem('morganaPreferredPlace')
                 );
+
+                // setto il testo dello snackbar che appare
+                this.snackText = 'Località preferita salvata!';
             } else {
                 // preferenza deselezionata, resetto il dato in LocalStorage
                 localStorage.setItem('morganaPreferredPlace', '');
                 console.log('nessuna preferenza salvata!');
+
+                // setto il testo dello snackbar che appare
+                this.snackText = 'Preferenza rimossa!';
             }
         },
 
@@ -639,6 +659,7 @@ export default {
                     this.hint = 'Si è verificato un errore!';
                 }
             } else {
+                // è fallita la 2a chiamata, quindi la 1a è andata bene
                 // problemi a recuperare le previsioni (oneCall endpoint)
                 this.hint = 'ATTENZIONE: previsioni non disponibili!';
                 this.forecastsAvailable = false;
@@ -649,30 +670,37 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// bandierina stato
 .flag {
     vertical-align: middle;
 }
 
+// ombra per tutte le icone tranne il sole
 .weather-cloudy {
     filter: drop-shadow(0 0 5px gray);
 }
+// ombra per l'icona del sole
 .weather-sunny {
     filter: drop-shadow(0 0 5px $yellow-accent-2);
 }
+// headers del pannellino con le previsioni per la settimana
 .forecast-header {
     height: 38px;
     min-height: 38px;
     max-height: 38px;
     background-color: $cyan-lighten-5;
 }
+// pannellino che si apre cliccando sull'header
 .v-expansion-panel {
     max-width: 95%;
 }
 
+// contenuto quando l'header viene espanso (apro la tendina)
 ::v-deep .v-expansion-panel-content .v-expansion-panel-content__wrap {
     padding: 0 0 16px;
 }
 
+// header del pannellino aperto, con le previsioni per la settimana
 ::v-deep .v-expansion-panel-header--active {
     background-color: $cyan-lighten-3;
     border-top-left-radius: 4px;
@@ -691,7 +719,16 @@ export default {
 ::v-deep .v-messages {
     font-size: 14px;
 }
-::v-deep .preferred-place .v-label {
-    font-size: 12px;
+
+// larghezza dello snackbar per la località preferita
+::v-deep .v-snack__wrapper {
+    max-width: 250px;
+    min-width: 250px;
+}
+// testo contenuto nello snackbar
+::v-deep .v-snack__content {
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
 }
 </style>

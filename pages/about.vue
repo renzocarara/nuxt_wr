@@ -31,7 +31,7 @@
                             target="_blank"
                             rel="noopener noreferrer"
                             >OpenWeatherMap</a
-                        >. Le API vengono chiamate tramite axios.
+                        >.
                     </p>
                     <h4>UTILIZZO</h4>
                     <p>
@@ -59,6 +59,13 @@
                         <li>10156,it (corrisponde a Torino)</li>
                         <li>10156 (corrisponde a New York)</li>
                     </ul>
+                    <br />
+                    <p>
+                        E' possibile definire una località come "preferita",
+                        flaggando la stellina (checkbox) accanto al nome della
+                        località. Al boot dell'applicazione questa verrà
+                        mostrata all'utente in automatico.
+                    </p>
                     <br />
                     <h4>TECNOLOGIE</h4>
                     <ul>
