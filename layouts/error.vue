@@ -4,7 +4,7 @@
             <v-card color="cyan lighten-5" max-width="800">
                 <v-card-title class="headline justify-center">
                     <span
-                        ><v-icon size="30" color="#d50000"
+                        ><v-icon size="30" color="red accent-4"
                             >mdi-alert-circle-outline</v-icon
                         ></span
                     >Attenzione

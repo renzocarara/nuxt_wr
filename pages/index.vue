@@ -11,10 +11,10 @@
                     </h1>
                     <br />
                 </v-card-title>
-                <v-card-subtitle class="pt-3 text-h6 text-center">
+                <v-card-subtitle class="pt-3 pb-0 text-h6 text-center">
                     <strong>Meteo e previsioni</strong>
                 </v-card-subtitle>
-                <v-card-text>
+                <v-card-text class="pb-0">
                     <div class="text-center">
                         <weather-logo-animation />
                     </div>

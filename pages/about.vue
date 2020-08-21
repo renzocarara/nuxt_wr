@@ -4,7 +4,7 @@
             <v-card color="cyan lighten-5" max-width="800">
                 <v-card-title class="headline justify-center">
                     <h3>
-                        <v-icon size="40" color="#d50000"
+                        <v-icon size="40" color="red accent-4"
                             >mdi-information</v-icon
                         >
 

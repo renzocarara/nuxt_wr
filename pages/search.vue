@@ -22,132 +22,177 @@
 
                 <!-- contenitore di tutti i dati da visualizzare in pagina (correnti e previsioni) -->
                 <div v-if="currentDataAvailable">
-                    <v-list-item three-line>
-                        <v-list-item-content class="pt-0">
-                            <!-- latitudine e longitudine -->
-                            <v-list-item-subtitle>
-                                <v-icon>mdi-crosshairs-gps</v-icon>
-                                <span class="text-caption"
-                                    >LAT {{ currentData.lat }}&deg; &nbsp;LON
-                                    {{ currentData.lon }}&deg;</span
-                                >
-                            </v-list-item-subtitle>
+                    <v-container>
+                        <v-row>
+                            <v-col cols="12" sm="6">
+                                <v-list-item three-line>
+                                    <v-list-item-content class="pt-0">
+                                        <!-- latitudine e longitudine -->
+                                        <v-list-item-subtitle>
+                                            <v-icon>mdi-crosshairs-gps</v-icon>
+                                            <span class="text-caption"
+                                                >LAT {{ currentData.lat }}&deg;
+                                                &nbsp;LON
+                                                {{ currentData.lon }}&deg;</span
+                                            >
+                                        </v-list-item-subtitle>
 
-                            <!-- bandiera, nome località, codice stato -->
-                            <v-list-item-title class="headline text-wrap">
-                                <img
-                                    class="d-inline-block flag"
-                                    :src="
-                                        currentData.flag
-                                            ? currentData.flag
-                                            : require('../assets/images/flags/united-nations.svg')
-                                    "
-                                    alt="country
-                                flag"
-                                /><img /> <strong>{{ currentData.city }}</strong
-                                >, {{ currentData.country }}
+                                        <!-- bandiera, nome località, codice stato -->
+                                        <v-list-item-title
+                                            class="headline text-wrap"
+                                        >
+                                            <img
+                                                class="d-inline-block flag"
+                                                :src="
+                                                    currentData.flag
+                                                        ? currentData.flag
+                                                        : require('../assets/images/flags/united-nations.svg')
+                                                "
+                                                alt="bandiera paese"
+                                            /><img />
+                                            <strong>{{
+                                                currentData.city
+                                            }}</strong
+                                            >, {{ currentData.country }}
 
-                                <!-- stellina per settare/resettare la località preferita -->
-                                <v-checkbox
-                                    v-if="browserHasStorage"
-                                    v-model="isPreferredPlace"
-                                    dense
-                                    color="red accent-4"
-                                    off-icon="mdi-star-outline"
-                                    on-icon="mdi-star"
-                                    hide-details="true"
-                                    class="d-inline-block my-0"
-                                    @change="updateStorage"
-                                ></v-checkbox>
+                                            <!-- stellina per settare/resettare la località preferita -->
+                                            <v-checkbox
+                                                v-if="browserHasStorage"
+                                                v-model="isPreferredPlace"
+                                                dense
+                                                color="red accent-4"
+                                                off-icon="mdi-star-outline"
+                                                on-icon="mdi-star"
+                                                hide-details="true"
+                                                class="d-inline-block my-0"
+                                                @change="updateStorage"
+                                            ></v-checkbox>
 
-                                <!-- snackbar di avviso quando viene checkata/uncheckata la stellina -->
-                                <v-snackbar
-                                    v-model="snackbar"
-                                    :timeout="timeout"
-                                    color="red accent-4"
-                                    centered
-                                    elevation="10"
-                                >
-                                    {{ snackText }}
-                                </v-snackbar>
-                            </v-list-item-title>
+                                            <!-- snackbar di avviso quando viene checkata/uncheckata la stellina -->
+                                            <v-snackbar
+                                                v-model="snackbar"
+                                                :timeout="timeout"
+                                                color="red accent-4"
+                                                centered
+                                                elevation="10"
+                                            >
+                                                {{ snackText }}
+                                            </v-snackbar>
+                                        </v-list-item-title>
 
-                            <!-- data: weekday, gg mm aa hh:mm -->
-                            <v-list-item-subtitle class="text-subtitle-1"
-                                >{{ currentData.dt }}
-                            </v-list-item-subtitle>
+                                        <!-- data: weekday, gg mm aa hh:mm -->
+                                        <v-list-item-subtitle
+                                            class="text-subtitle-1"
+                                            >{{ currentData.dt }}
+                                        </v-list-item-subtitle>
 
-                            <!-- descrizione del meteo corrente -->
-                            <v-list-item-subtitle>
-                                <strong class="text-h5">{{
-                                    currentData.description
-                                }}</strong>
-                            </v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
-
-                    <v-card-text class="py-0">
-                        <v-row align="center">
-                            <v-col class="text-right" cols="6">
-                                <span class="display-1"
-                                    ><v-icon>mdi-thermometer</v-icon
-                                    >{{ currentData.temp }}&deg;C</span
-                                ><br />
-                                <span class="text-subtitle-1 grey--text"
-                                    >percepita
-                                    {{ currentData.feelsLike }}&deg;C</span
-                                >
+                                        <!-- descrizione del meteo corrente -->
+                                        <v-list-item-subtitle>
+                                            <strong class="text-h5">{{
+                                                currentData.description
+                                            }}</strong>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                                </v-list-item>
                             </v-col>
-                            <v-col cols="6" class="py-0">
-                                <v-img
-                                    :class="
-                                        currentData.iconCode == '01d'
-                                            ? 'weather-sunny'
-                                            : 'weather-cloudy'
-                                    "
-                                    :src="currentData.iconPath"
-                                    alt="weather icon"
-                                    width="102"
-                                ></v-img>
+
+                            <v-col cols="12" sm="6">
+                                <v-card-text class="py-0">
+                                    <v-row align="center">
+                                        <v-col class="text-right" cols="6">
+                                            <span class="display-1"
+                                                ><v-icon>mdi-thermometer</v-icon
+                                                >{{
+                                                    currentData.temp
+                                                }}&deg;C</span
+                                            ><br />
+                                            <span
+                                                class="text-subtitle-1 grey--text"
+                                                >percepita
+                                                {{
+                                                    currentData.feelsLike
+                                                }}&deg;C</span
+                                            >
+                                        </v-col>
+                                        <v-col cols="6" class="py-0">
+                                            <v-img
+                                                :class="
+                                                    currentData.iconCode ==
+                                                    '01d'
+                                                        ? 'weather-sunny'
+                                                        : 'weather-cloudy'
+                                                "
+                                                :src="currentData.iconPath"
+                                                alt="weather icon"
+                                                width="102"
+                                            ></v-img>
+                                        </v-col>
+                                    </v-row>
+                                </v-card-text>
                             </v-col>
                         </v-row>
-                    </v-card-text>
 
-                    <v-list-item>
-                        <v-list-item-content>
-                            <v-list-item-subtitle class="text-subtitle-1"
-                                ><v-icon>mdi-weather-windy</v-icon
-                                >&nbsp;velocità {{ currentData.windSpeed
-                                }}<br />
-                                <v-icon>mdi-compass-outline</v-icon
-                                >&nbsp;direzione
-                                {{ currentData.windDeg }}</v-list-item-subtitle
-                            >
+                        <v-row>
+                            <v-col cols="12" sm="6" class="py-0">
+                                <v-list-item>
+                                    <v-list-item-content class="py-0">
+                                        <v-list-item-subtitle
+                                            class="text-subtitle-1"
+                                            ><v-icon>mdi-weather-windy</v-icon
+                                            >&nbsp;velocità
+                                            {{ currentData.windSpeed }}<br />
+                                            <v-icon>mdi-compass-outline</v-icon
+                                            >&nbsp;direzione
+                                            {{
+                                                currentData.windDeg
+                                            }}</v-list-item-subtitle
+                                        >
 
-                            <v-list-item-subtitle class="text-subtitle-1"
-                                ><v-icon>mdi-water-percent</v-icon>&nbsp;umidità
-                                {{ currentData.humidity }}</v-list-item-subtitle
-                            >
+                                        <v-list-item-subtitle
+                                            class="text-subtitle-1"
+                                            ><v-icon>mdi-water-percent</v-icon
+                                            >&nbsp;umidità
+                                            {{
+                                                currentData.humidity
+                                            }}</v-list-item-subtitle
+                                        >
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-col>
 
-                            <v-list-item-subtitle class="text-subtitle-1"
-                                ><v-icon>mdi-format-line-weight</v-icon
-                                >&nbsp;pressione
-                                {{ currentData.pressure }}</v-list-item-subtitle
-                            >
+                            <v-col cols="12" sm="6" class="py-0">
+                                <v-list-item>
+                                    <v-list-item-content class="py-0">
+                                        <v-list-item-subtitle
+                                            class="text-subtitle-1"
+                                            ><v-icon
+                                                >mdi-format-line-weight</v-icon
+                                            >&nbsp;pressione
+                                            {{
+                                                currentData.pressure
+                                            }}</v-list-item-subtitle
+                                        >
 
-                            <v-list-item-subtitle class="text-subtitle-1"
-                                ><v-icon>mdi-weather-sunset-up</v-icon>&nbsp;il
-                                sole sorge alle
-                                {{ currentData.sunrise }}
-                            </v-list-item-subtitle>
+                                        <v-list-item-subtitle
+                                            class="text-subtitle-1"
+                                            ><v-icon
+                                                >mdi-weather-sunset-up</v-icon
+                                            >&nbsp;il sole sorge alle
+                                            {{ currentData.sunrise }}
+                                        </v-list-item-subtitle>
 
-                            <v-list-item-subtitle class="text-subtitle-1"
-                                ><v-icon>mdi-weather-sunset-down</v-icon
-                                >&nbsp;il sole tramonta alle
-                                {{ currentData.sunset }}
-                            </v-list-item-subtitle>
-                        </v-list-item-content>
-                    </v-list-item>
+                                        <v-list-item-subtitle
+                                            class="text-subtitle-1"
+                                            ><v-icon
+                                                >mdi-weather-sunset-down</v-icon
+                                            >&nbsp;il sole tramonta alle
+                                            {{ currentData.sunset }}
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                                </v-list-item>
+                            </v-col>
+                        </v-row>
+                    </v-container>
 
                     <!-- pannello Previsioni -->
                     <div v-if="forecastsAvailable">
@@ -212,148 +257,198 @@
                                     <h4>
                                         <strong>{{ forecast.date }}</strong>
                                     </h4>
-                                    <v-list-item>
-                                        <v-list-item-content>
-                                            <v-list-item-subtitle
-                                                class="text-subtitle-1"
+
+                                    <v-container>
+                                        <v-row>
+                                            <v-col
+                                                cols="12"
+                                                sm="6"
+                                                class="py-0"
                                             >
-                                                <v-icon
-                                                    >mdi-text-box-outline</v-icon
-                                                >&nbsp;
-                                                {{ forecast.description }}
-                                            </v-list-item-subtitle>
-
-                                            <v-list-item-subtitle
-                                                class="text-subtitle-1"
-                                                ><v-icon
-                                                    >mdi-weather-windy</v-icon
-                                                >&nbsp;
-                                                {{
-                                                    forecast.windSpeed
-                                                }}&nbsp;&nbsp;
-                                                <v-icon
-                                                    >mdi-compass-outline</v-icon
-                                                >&nbsp;
-                                                {{
-                                                    forecast.windDeg
-                                                }}</v-list-item-subtitle
-                                            >
-
-                                            <v-list-item-subtitle
-                                                class="text-subtitle-1"
-                                                ><v-icon
-                                                    >mdi-water-percent</v-icon
-                                                >&nbsp; {{ forecast.humidity }}
-                                                &nbsp;&nbsp;
-                                                <v-icon
-                                                    >mdi-format-line-weight</v-icon
-                                                >&nbsp; {{ forecast.pressure }}
-                                            </v-list-item-subtitle>
-
-                                            <v-list-item-subtitle
-                                                class="text-subtitle-1"
-                                                ><v-icon>mdi-sunglasses</v-icon
-                                                >&nbsp;&nbsp;UVI
-                                                <v-btn
-                                                    class="uvi-button"
-                                                    elevation="5"
-                                                    x-small
-                                                    rounded
-                                                    :color="forecast.uvicolor"
-                                                    @click.stop="dialog = true"
-                                                    >{{ forecast.uvi }}</v-btn
-                                                >&nbsp;&nbsp;
-
-                                                <!-- bottoncino "informazioni" su UVI -->
-                                                <!-- color="red accent-4" -->
-                                                <!-- <v-btn
-                                                    color="cyan lighten-4"
-                                                    class="px-0"
-                                                    elevation="5"
-                                                    x-small
-                                                    @click.stop="dialog = true"
-                                                >
-                                                    <v-icon class="info-icon"
-                                                        >mdi-information-variant</v-icon
+                                                <v-list-item>
+                                                    <v-list-item-content
+                                                        class="py-0"
                                                     >
-                                                </v-btn> -->
-                                                <v-dialog
-                                                    v-model="dialog"
-                                                    max-width="290"
-                                                >
-                                                    <v-card
-                                                        color="cyan lighten-5"
-                                                    >
-                                                        <v-card-title
-                                                            class="headline"
-                                                            >Indice UV
-                                                        </v-card-title>
+                                                        <v-list-item-subtitle
+                                                            class="text-subtitle-1"
+                                                        >
+                                                            <v-icon
+                                                                >mdi-text-box-outline</v-icon
+                                                            >&nbsp;
+                                                            {{
+                                                                forecast.description
+                                                            }}
+                                                        </v-list-item-subtitle>
 
-                                                        <v-card-text>
-                                                            <v-img
-                                                                :src="
-                                                                    require('../assets/images/uvipanel.png')
-                                                                "
-                                                                alt="indici UV"
-                                                            ></v-img>
-                                                        </v-card-text>
+                                                        <v-list-item-subtitle
+                                                            class="text-subtitle-1"
+                                                            ><v-icon
+                                                                >mdi-weather-windy</v-icon
+                                                            >&nbsp;
+                                                            {{
+                                                                forecast.windSpeed
+                                                            }}&nbsp;&nbsp;
+                                                            <v-icon
+                                                                >mdi-compass-outline</v-icon
+                                                            >&nbsp;
+                                                            {{
+                                                                forecast.windDeg
+                                                            }}</v-list-item-subtitle
+                                                        >
 
-                                                        <v-card-actions>
-                                                            <v-spacer></v-spacer>
+                                                        <v-list-item-subtitle
+                                                            class="text-subtitle-1"
+                                                            ><v-icon
+                                                                >mdi-water-percent</v-icon
+                                                            >&nbsp;
+                                                            {{
+                                                                forecast.humidity
+                                                            }}
+                                                            &nbsp;&nbsp;
+                                                            <v-icon
+                                                                >mdi-format-line-weight</v-icon
+                                                            >&nbsp;
+                                                            {{
+                                                                forecast.pressure
+                                                            }}
+                                                        </v-list-item-subtitle>
 
+                                                        <v-list-item-subtitle
+                                                            class="text-subtitle-1"
+                                                            ><v-icon
+                                                                >mdi-sunglasses</v-icon
+                                                            >&nbsp;&nbsp;UVI
                                                             <v-btn
-                                                                color="red accent-4"
-                                                                dark
-                                                                target="_blank"
-                                                                href="https://www.melanomaitalia.org/trova-le-risposte/prevenzione/le-radiazioni-ultraviolette/indice-ultravioletto/#:~:text=L'indice%20predice%20il%20rischio,%2B%20(rischio%20molto%20alto).&text=Indice%20UV%203%2D5%3A%20significa,in%20meno%20di%2020%20minuti."
-                                                            >
-                                                                Ulteriori Info
-                                                            </v-btn>
-
-                                                            <v-btn
-                                                                color="red accent-4"
-                                                                dark
-                                                                @click="
-                                                                    dialog = false
+                                                                class="uvi-button"
+                                                                elevation="5"
+                                                                x-small
+                                                                rounded
+                                                                :color="
+                                                                    forecast
+                                                                        .uviData
+                                                                        .color
                                                                 "
+                                                                @click.stop="
+                                                                    dialog = true
+                                                                "
+                                                                >{{
+                                                                    forecast
+                                                                        .uviData
+                                                                        .value
+                                                                }}</v-btn
+                                                            >&nbsp;
+
+                                                            <strong
+                                                                class="uvi-text"
+                                                                >{{
+                                                                    forecast
+                                                                        .uviData
+                                                                        .text
+                                                                }}</strong
                                                             >
-                                                                Chiudi
-                                                            </v-btn>
-                                                        </v-card-actions>
-                                                    </v-card>
-                                                </v-dialog>
-                                            </v-list-item-subtitle>
 
-                                            <v-list-item-subtitle
-                                                class="text-subtitle-1"
-                                                ><v-icon
-                                                    >mdi-weather-sunset-up</v-icon
-                                                >&nbsp;alba
-                                                {{ forecast.sunrise }}
-                                                <br />
-                                                <v-icon
-                                                    >mdi-weather-sunset-down</v-icon
-                                                >&nbsp;tramonto
-                                                {{ forecast.sunset }}
-                                            </v-list-item-subtitle>
+                                                            <!-- dialog che appare al click sul bottoncino dell'UV Index -->
+                                                            <v-dialog
+                                                                v-model="dialog"
+                                                                max-width="290"
+                                                            >
+                                                                <v-card
+                                                                    color="cyan lighten-5"
+                                                                >
+                                                                    <v-card-title
+                                                                        class="headline justify-center"
+                                                                        >Indice
+                                                                        UV
+                                                                    </v-card-title>
 
-                                            <v-list-item-subtitle
-                                                class="text-subtitle-1"
+                                                                    <v-card-text>
+                                                                        <v-img
+                                                                            :src="
+                                                                                require('../assets/images/uvipanel.png')
+                                                                            "
+                                                                            alt="indici UV"
+                                                                        ></v-img>
+                                                                    </v-card-text>
+
+                                                                    <v-card-actions>
+                                                                        <v-spacer></v-spacer>
+
+                                                                        <v-btn
+                                                                            color="red accent-4"
+                                                                            dark
+                                                                            target="_blank"
+                                                                            href="https://www.melanomaitalia.org/trova-le-risposte/prevenzione/le-radiazioni-ultraviolette/indice-ultravioletto/#:~:text=L'indice%20predice%20il%20rischio,%2B%20(rischio%20molto%20alto).&text=Indice%20UV%203%2D5%3A%20significa,in%20meno%20di%2020%20minuti."
+                                                                        >
+                                                                            Ulteriori
+                                                                            Info
+                                                                        </v-btn>
+
+                                                                        <v-btn
+                                                                            color="red accent-4"
+                                                                            dark
+                                                                            @click="
+                                                                                dialog = false
+                                                                            "
+                                                                        >
+                                                                            Chiudi
+                                                                        </v-btn>
+                                                                    </v-card-actions>
+                                                                </v-card>
+                                                            </v-dialog>
+                                                        </v-list-item-subtitle>
+                                                    </v-list-item-content>
+                                                </v-list-item>
+                                            </v-col>
+
+                                            <v-col
+                                                cols="12"
+                                                sm="6"
+                                                class="py-0"
                                             >
-                                                <v-icon
-                                                    >mdi-umbrella-outline</v-icon
-                                                >&nbsp;probabilità
-                                                {{ forecast.pop }}
-                                                <br />
-                                                <span
-                                                    v-if="forecast.pop != '0%'"
-                                                    >&nbsp;&nbsp;<v-icon>mdi-water-outline</v-icon>&nbsp;quantità&nbsp;{{
-                                                        forecast.rain
-                                                    }}</span
-                                                >
-                                            </v-list-item-subtitle>
-                                        </v-list-item-content>
-                                    </v-list-item>
+                                                <v-list-item>
+                                                    <v-list-item-content
+                                                        class="py-0"
+                                                    >
+                                                        <v-list-item-subtitle
+                                                            class="text-subtitle-1"
+                                                            ><v-icon
+                                                                >mdi-weather-sunset-up</v-icon
+                                                            >&nbsp;alba
+                                                            {{
+                                                                forecast.sunrise
+                                                            }}
+                                                            <br />
+                                                            <v-icon
+                                                                >mdi-weather-sunset-down</v-icon
+                                                            >&nbsp;tramonto
+                                                            {{
+                                                                forecast.sunset
+                                                            }}
+                                                        </v-list-item-subtitle>
+
+                                                        <v-list-item-subtitle
+                                                            class="text-subtitle-1"
+                                                        >
+                                                            <v-icon
+                                                                >mdi-umbrella-outline</v-icon
+                                                            >&nbsp;probabilità
+                                                            {{ forecast.pop }}
+                                                            <br />
+                                                            <span
+                                                                v-if="
+                                                                    forecast.pop !=
+                                                                    '0%'
+                                                                "
+                                                                >&nbsp;&nbsp;<v-icon>mdi-water-outline</v-icon>&nbsp;quantità&nbsp;{{
+                                                                    forecast.rain
+                                                                }}</span
+                                                            >
+                                                        </v-list-item-subtitle>
+                                                    </v-list-item-content>
+                                                </v-list-item>
+                                            </v-col>
+                                        </v-row>
+                                    </v-container>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>
                         </v-expansion-panels>
@@ -676,13 +771,7 @@ export default {
                     // dettagli previsioni (accordion)
                     description: data.daily[i].weather[0].description,
 
-                    // tempMorning: Math.round(data.daily[i].temp.morn) + '\xB0',
-                    // tempNoon: Math.round(data.daily[i].temp.day) + '\xB0',
-                    // tempEvening: Math.round(data.daily[i].temp.eve) + '\xB0',
-                    // tempNight: Math.round(data.daily[i].temp.night) + '\xB0',
-
-                    uvi: data.daily[i].uvi.toFixed(2),
-                    uvicolor: this.setUviColor(data.daily[i].uvi),
+                    uviData: this.setUviData(data.daily[i].uvi),
 
                     sunrise: moment
                         .utc(
@@ -713,26 +802,33 @@ export default {
             // console.log('forecasts:', this.forecasts);
         },
 
-        setUviColor(uviIndex) {
-            let uviColor = '';
-            uviIndex = Math.round(uviIndex);
+        setUviData(uviIndex) {
+            // DESCRIZIONE:
+            // ricevo il valore di UV e ricavo un float con 2 decimali, un colore e una descrizione testuale
+            // restituisce un oggetto con questi 3 valori
+
+            const uviData = {};
+            uviData.value = uviIndex.toFixed(2); // considero solo 2 decimali
+
+            uviIndex = Math.floor(uviIndex); // considero solo la parte intera
             if (uviIndex <= 2) {
-                // BASSO
-                uviColor = 'green';
+                uviData.text = 'bassa';
+                uviData.color = 'green';
             } else if (uviIndex <= 5) {
-                // MODERATO
-                uviColor = 'yellow';
+                uviData.text = 'moderata';
+                uviData.color = 'yellow';
             } else if (uviIndex <= 7) {
-                // ALTO
-                uviColor = 'orange';
+                uviData.text = 'alta';
+                uviData.color = 'orange';
             } else if (uviIndex <= 10) {
-                // MOLTO ALTO
-                uviColor = 'red';
+                uviData.text = 'molto alta';
+                uviData.color = 'red';
             } else {
-                uviColor = 'purple'; // ESTREMO
+                uviData.text = 'estrema';
+                uviData.color = 'purple';
             }
 
-            return uviColor;
+            return uviData;
         },
 
         handleError(error) {
@@ -831,5 +927,8 @@ export default {
 }
 .info-icon {
     font-size: 22px;
+}
+.uvi-text {
+    font-size: 14px;
 }
 </style>
