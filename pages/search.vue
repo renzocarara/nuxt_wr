@@ -254,16 +254,19 @@
                                                 class="text-subtitle-1"
                                                 ><v-icon>mdi-sunglasses</v-icon
                                                 >&nbsp;&nbsp;UVI
-                                                <v-chip
+                                                <v-btn
                                                     class="uvi-button"
-                                                    small
+                                                    elevation="5"
+                                                    x-small
+                                                    rounded
                                                     :color="forecast.uvicolor"
-                                                    >{{ forecast.uvi }}</v-chip
+                                                    @click.stop="dialog = true"
+                                                    >{{ forecast.uvi }}</v-btn
                                                 >&nbsp;&nbsp;
 
                                                 <!-- bottoncino "informazioni" su UVI -->
                                                 <!-- color="red accent-4" -->
-                                                <v-btn
+                                                <!-- <v-btn
                                                     color="cyan lighten-4"
                                                     class="px-0"
                                                     elevation="5"
@@ -273,7 +276,7 @@
                                                     <v-icon class="info-icon"
                                                         >mdi-information-variant</v-icon
                                                     >
-                                                </v-btn>
+                                                </v-btn> -->
                                                 <v-dialog
                                                     v-model="dialog"
                                                     max-width="290"
@@ -441,7 +444,7 @@ export default {
         // e setto un flag per indicarlo
         if (typeof Storage !== 'undefined') {
             this.browserHasStorage = true;
-            console.log('BROWSER supporta Storage!!');
+            // console.log('BROWSER supporta Storage!!');
         }
     },
 
@@ -571,17 +574,17 @@ export default {
                     this.currentData.id
                 );
 
-                console.log(
-                    'preferenza:',
-                    localStorage.getItem('morganaPreferredPlace')
-                );
+                // console.log(
+                //     'preferenza:',
+                //     localStorage.getItem('morganaPreferredPlace')
+                // );
 
                 // setto il testo dello snackbar che appare
                 this.snackText = 'Località preferita salvata!';
             } else {
                 // preferenza deselezionata, resetto il dato in LocalStorage
                 localStorage.setItem('morganaPreferredPlace', '');
-                console.log('nessuna preferenza salvata!');
+                // console.log('nessuna preferenza salvata!');
 
                 // setto il testo dello snackbar che appare
                 this.snackText = 'Preferenza rimossa!';
@@ -713,7 +716,6 @@ export default {
         setUviColor(uviIndex) {
             let uviColor = '';
             uviIndex = Math.round(uviIndex);
-            console.log('uvIndex rounded:', uviIndex);
             if (uviIndex <= 2) {
                 // BASSO
                 uviColor = 'green';
@@ -731,10 +733,6 @@ export default {
             }
 
             return uviColor;
-        },
-
-        uviInfos() {
-            console.log('uviInfos called!');
         },
 
         handleError(error) {
@@ -827,6 +825,7 @@ export default {
     font-size: 14px;
 }
 .uvi-button {
+    vertical-align: text-bottom;
     font-weight: bold;
     font-size: 14px;
 }

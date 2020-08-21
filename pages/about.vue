@@ -2,12 +2,17 @@
     <v-layout column justify-center align-center>
         <v-flex>
             <v-card color="cyan lighten-5">
-                <v-card-title class="headline text-center">
-                    <span
-                        ><v-icon size="30" color="#d50000"
+                <v-card-title class="headline justify-center">
+                    <h3>
+                        <v-icon size="40" color="#d50000"
                             >mdi-information</v-icon
-                        ></span
-                    >&nbsp; Informazioni
+                        >
+
+                        <span class="text-secondary-color"
+                            ><strong>m</strong></span
+                        ><span class="cyan--text">organa</span>
+                        <span class="text-subtitle-1"> v1.0.0</span>
+                    </h3>
                 </v-card-title>
                 <v-card-text>
                     <h4>SCOPO</h4>
@@ -38,7 +43,7 @@
                         E' necessario inserire il nome di una località da
                         ricercare.<br />
                         E' possibile opzionalmente specificare anche un codice
-                        della nazione, alcuni esempi:
+                        della nazione (ISO 3166 country code), alcuni esempi:
                     </p>
                     <ul>
                         <li>roma,it</li>
@@ -50,7 +55,7 @@
                     <p>
                         E' possibile anche ricercare tramite codice postale, nel
                         qual caso è nesessario specificare il codice della
-                        nazione (ISO 3166 country code)<br />
+                        nazione<br />
                         (se non viene specificato il default è US), alcuni
                         esempi:
                     </p>

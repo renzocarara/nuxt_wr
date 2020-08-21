@@ -63,12 +63,12 @@
         <v-footer :absolute="!fixed" dark color="cyan lighten-3" app>
             <span>
                 <a
+                    class="link"
                     href="https://www.renzocarara.it/"
                     target="_blank"
                     rel="noopener noreferrer"
-                >
-                </a
-                >Renzo Carara - &copy; {{ new Date().getFullYear() }}</span
+                    >Renzo Carara - &copy; {{ new Date().getFullYear() }}
+                </a></span
             >
             <v-spacer />
             <div class="mobile">
@@ -128,6 +128,10 @@ export default {
 }
 .mobile {
     font-size: 12px;
+}
+.link {
+    text-decoration: none;
+    color: white;
 }
 @media screen and (max-width: 600px) {
     .mobile {
