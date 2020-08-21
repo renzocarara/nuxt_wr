@@ -1,7 +1,7 @@
 <template>
     <v-layout column justify-center align-center>
         <v-flex>
-            <v-card color="cyan lighten-5">
+            <v-card color="cyan lighten-5" max-width="800">
                 <v-card-title class="headline justify-center">
                     <span
                         ><v-icon size="30" color="#d50000"

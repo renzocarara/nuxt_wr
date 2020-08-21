@@ -1,5 +1,6 @@
 <template>
     <v-app>
+        <!-- menu a scomparsa laterale -->
         <v-navigation-drawer
             v-model="drawer"
             :clipped="clipped"
@@ -25,6 +26,7 @@
                 </v-list-item>
             </v-list>
         </v-navigation-drawer>
+        <!-- navigation bar - header -->
         <v-app-bar
             :clipped-left="clipped"
             fixed
@@ -50,16 +52,17 @@
                 </v-card-title>
             </nuxt-link>
             <v-spacer />
-
             <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         </v-app-bar>
+
         <!-- quella che segue è il corpo della pagina, cioè quello che sta fra l'header e il footer -->
         <v-main class="d-flex align-center bgc-main">
             <v-container>
                 <nuxt />
             </v-container>
         </v-main>
-        <!--  -->
+
+        <!-- footer -->
         <v-footer :absolute="!fixed" dark color="cyan lighten-3" app>
             <span>
                 <a

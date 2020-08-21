@@ -1,7 +1,7 @@
 <template>
     <v-layout>
         <v-flex class="text-center">
-            <v-card class="mx-auto" max-width="400" color="cyan lighten-5">
+            <v-card class="mx-auto" max-width="800" color="cyan lighten-5">
                 <!-- Search Bar -->
                 <v-text-field
                     id="place-input"

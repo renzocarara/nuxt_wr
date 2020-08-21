@@ -31,8 +31,8 @@ export default {
             },
             {
                 hid: 'description',
-                name: 'mini app che fornisce dati e previsioni metereologiche',
-                content: 'version 0.1.0',
+                name: 'web app che fornisce dati e previsioni metereologiche',
+                content: 'version 1.0.0',
             },
             {
                 property: 'og:image',
