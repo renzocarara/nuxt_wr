@@ -151,7 +151,20 @@
 
 <script>
 export default {
-    components: {},
+    head() {
+        return {
+            titleTemplate: '%s - ' + 'Meteo Web App - Informazioni',
+            title: 'Morgana',
+            meta: [
+                // hid is used as unique identifier. Do not use `vmid` for it as it will not work
+                {
+                    hid: 'description',
+                    name: 'Pagina di informazioni',
+                    content: 'Informazioni sulla web app Morgana',
+                },
+            ],
+        };
+    },
 };
 </script>
 

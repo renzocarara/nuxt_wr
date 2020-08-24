@@ -39,7 +39,6 @@
 
 <script>
 export default {
-    layout: 'empty',
     props: {
         error: {
             type: Object,
@@ -52,11 +51,22 @@ export default {
             otherError: 'Si è verificato un errore',
         };
     },
+
+    layout: 'empty',
     head() {
         const title =
             this.error.statusCode === 404 ? this.pageNotFound : this.otherError;
         return {
+            titleTemplate: 'Morgana - Meteo Web App - ' + '%s',
             title,
+            meta: [
+                // hid is used as unique identifier. Do not use `vmid` for it as it will not work
+                {
+                    hid: 'description',
+                    name: 'Pagina di errore',
+                    content: 'Errore',
+                },
+            ],
         };
     },
 };
