@@ -74,7 +74,7 @@
                 </a></span
             >
             <v-spacer />
-            <div class="mobile">
+            <div v-if="isSearchPage" class="mobile">
                 Country flag Icons made by
                 <a
                     href="https://www.flaticon.com/authors/freepik"
@@ -121,6 +121,13 @@ export default {
                 },
             ],
         };
+    },
+    computed: {
+        isSearchPage() {
+            // verifico se sono sulla view "search" e ritorno true o false
+            console.log('this.$route.name', this.$route.name);
+            return this.$route.name === 'search';
+        },
     },
 };
 </script>
