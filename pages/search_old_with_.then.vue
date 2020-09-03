@@ -555,49 +555,11 @@ export default {
             }
         },
 
-        handleResponseWeather(response) {
+        getApiData(by) {
             // DESCRIZIONE:
-            // gestisce la response della 1a chiamata axios
-
-            // console.log('SUCCESS 1st axios call');
-            // console.log('response:', response);
-
-            this.place = ''; // svuoto la Search bar
-            this.hint = 'es. "roma,it" (lo stato è opzionale)'; // ripristino hint al msg iniziale
-            this.currentDataAvailable = true; // ho disponibili i dati del meteo corrente
-            this.currentData = {}; // resetto dati meteo correnti
-            this.forecasts = []; // resetto dati previsioni
-
-            // la prima API call è ok, estraggo i dati dalla response
-            this.extractWeatherData(response.data);
-
-            this.isPreferredPlace = this.verifyPreferred(); // verifico se la località è quella "preferred"
-        },
-
-        handleResponseForecast(oneCallResponse) {
-            // DESCRIZIONE:
-            // gestisce la response della 2a chiamata axios
-
-            // la seconda API call è ok, ho le previsioni
-            // console.log('SUCCESS 2nd axios call');
-            // this.loading = false; // disattivo la progress bar
-            this.error = false; // disattivo la condizione di errore
-            this.forecastsAvailable = true; // ho disponibili i dati delle previsioni
-
-            // ho tutti i dati da visualizzare in oneCallResponse
-            this.extractOnecallData(oneCallResponse.data);
-        },
-
-        async getApiData(by) {
-            // DESCRIZIONE:
-            // viene chiamata in 2 casi:
-            // - l'utente ha chiesto una località da ricercare
-            // - allo startup della app se è definita (in LocalStorage) una località preferita
-            // vengono effettuate 2 chiamate API usando axios e async/await, il tutto inserito in una try&catch
-            // nel caso venga sollevata un'eccezione (axios non risolta), viene chiamato un handleError()
-            // la 2a chiamata axios dipende da alcuni dati (lat e lon)
+            // vengono effettuate 2 chiamate API usando axios in sequenza, la 2a dipende da alcuni dati (lat e lon)
             // recuperati dalla 1a. Se la 1a chiamata fallisce, le seconda non viene effettuata.
-            // La 1a chiamata recupera i dati correnti della località selezionata (temperatura, vento, pressione,...)
+            // La 1a chiamata recupera i dari correnti della località selezionata (temperatura, vento, pressione,...)
             // La seconda serve per recuperare sostanzialmente le previsioni,
             // se questa seconda chiamata non dà esito positivo, i dati recuperati con la 1a chiamata
             // vengono comunque visualizzati, ma le previsioni non saranno disponibili
@@ -624,37 +586,60 @@ export default {
                 '&units=' +
                 METRIC;
 
-            try {
-                const responseWeather = await axios.get(
-                    BASE_URL + EP_WEATHER + weatherParams
-                );
-                this.handleResponseWeather(responseWeather);
+            axios
+                .get(BASE_URL + EP_WEATHER + weatherParams)
+                .then((response) => {
+                    // console.log('SUCCESS 1st axios call');
+                    // console.log('response:', response);
 
-                // preparo i parametri per la 2a API call
-                // località ricercata + api key + lingua + unità di misura + esclusioni
-                const oneCallParams =
-                    '?lat=' +
-                    this.currentData.lat +
-                    '&lon=' +
-                    this.currentData.lon +
-                    '&appid=' +
-                    APPID +
-                    '&lang=' +
-                    IT +
-                    '&units=' +
-                    METRIC +
-                    '&exclude=minutely,hourly';
+                    this.place = ''; // svuoto la Search bar
+                    this.hint = 'es. "roma,it" (lo stato è opzionale)'; // ripristino hint al msg iniziale
+                    this.currentDataAvailable = true; // ho disponibili i dati del meteo corrente
+                    this.currentData = {}; // resetto dati meteo correnti
+                    this.forecasts = []; // resetto dati previsioni
 
-                const responseForecast = await axios.get(
-                    BASE_URL + EP_ONECALL + oneCallParams
-                );
-                this.handleResponseForecast(responseForecast);
-            } catch (error) {
-                this.error = true; // attivo la condizione di errore
-                this.handleError(error);
-            } finally {
-                this.loading = false; // disattivo la progress bar
-            }
+                    // la prima API call è ok, estraggo i dati dalla response
+                    this.extractWeatherData(response.data);
+
+                    this.isPreferredPlace = this.verifyPreferred(); // verifico se la località è quella "preferred"
+
+                    // preparo i parametri per la 2a API call
+                    // località ricercata + api key + lingua + unità di misura + esclusioni
+                    const oneCallParams =
+                        '?lat=' +
+                        this.currentData.lat +
+                        '&lon=' +
+                        this.currentData.lon +
+                        '&appid=' +
+                        APPID +
+                        '&lang=' +
+                        IT +
+                        '&units=' +
+                        METRIC +
+                        '&exclude=minutely,hourly';
+
+                    return axios.get(BASE_URL + EP_ONECALL + oneCallParams);
+                })
+                .then((oneCallResponse) => {
+                    // la seconda API call è ok, ho le previsioni
+                    // console.log('SUCCESS 2nd axios call');
+                    // this.loading = false; // disattivo la progress bar
+                    this.error = false; // disattivo la condizione di errore
+                    this.forecastsAvailable = true; // ho disponibili i dati delle previsioni
+
+                    // ho tutti i dati da visualizzare in oneCallResponse
+                    this.extractOnecallData(oneCallResponse.data);
+                })
+
+                .catch((error) => {
+                    console.log('error', error);
+                    // this.loading = false; // disattivo la progress bar
+                    this.error = true; // attivo la condizione di errore
+                    this.handleError(error);
+                })
+                .finally(() => {
+                    this.loading = false; // disattivo la progress bar
+                });
         },
 
         verifyPreferred() {
@@ -851,18 +836,15 @@ export default {
             // gestisce i 2 casi a seconda che fallisca la 1a o la 2a chiamata API
             // NOTA: se la 1a fallisce la 2a non viene neanche effettuata
             // in base a ciò che contiene l'url, stbilisco quale chiamata ha generato errore
-            console.log('ERROR an axios call failed');
+            // console.log('ERROR an axios call failed');
 
             if (error.config.url.includes('/weather?')) {
                 // è fallita la 1a chiamata axios (weather endpoint)
-                if (
-                    error.response !== undefined &&
-                    error.response.status === 404
-                ) {
-                    // il server ha risposto, ma la località non è stata trovata (weather endpoint)
+                if (error.response.status === 404) {
+                    // località non trovata (weather endpoint)
                     this.hint = 'Località non trovata!';
                 } else {
-                    this.hint = 'Si è verificato un errore!'; // non c'è risposta dal server
+                    this.hint = 'Si è verificato un errore!';
                 }
             } else {
                 // è fallita la 2a chiamata, quindi la 1a è andata bene
