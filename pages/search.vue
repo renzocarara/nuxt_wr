@@ -56,7 +56,7 @@
                                             >, {{ currentData.country }}
 
                                             <!-- stellina per settare/resettare la località preferita -->
-                                            <v-checkbox
+                                            <!-- <v-checkbox
                                                 v-if="browserHasStorage"
                                                 v-model="isPreferredPlace"
                                                 dense
@@ -66,7 +66,49 @@
                                                 hide-details="true"
                                                 class="d-inline-block my-0"
                                                 @change="updateStorage"
-                                            ></v-checkbox>
+                                            ></v-checkbox> -->
+
+                                            <v-tooltip
+                                                bottom
+                                                :open-on-click="false"
+                                            >
+                                                <template
+                                                    v-slot:activator="{
+                                                        on,
+                                                        attrs,
+                                                    }"
+                                                >
+                                                    <span
+                                                        v-bind="attrs"
+                                                        v-on="on"
+                                                    >
+                                                        <v-checkbox
+                                                            v-if="
+                                                                browserHasStorage
+                                                            "
+                                                            v-model="
+                                                                isPreferredPlace
+                                                            "
+                                                            dense
+                                                            color="red accent-4"
+                                                            hide-details="true"
+                                                            class="d-inline-block my-0"
+                                                            off-icon="mdi-star-outline"
+                                                            on-icon="mdi-star"
+                                                            @change="
+                                                                updateStorage
+                                                            "
+                                                        >
+                                                        </v-checkbox>
+                                                    </span>
+                                                </template>
+                                                <span v-if="isPreferredPlace">
+                                                    Rimuovi Preferito
+                                                </span>
+                                                <span v-else>
+                                                    Imposta Preferito
+                                                </span>
+                                            </v-tooltip>
 
                                             <!-- snackbar di avviso quando viene checkata/uncheckata la stellina -->
                                             <v-snackbar
@@ -952,6 +994,8 @@ export default {
     font-weight: bold;
     font-size: 14px;
 }
+
+// bottone indice UV
 .uvi-button {
     vertical-align: text-bottom;
     font-weight: bold;
